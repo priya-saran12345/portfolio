@@ -15,8 +15,8 @@ const config: Config = {
         ink: "#E8EAED",
         muted: "#7C8798",
         teal: {
-          DEFAULT: "#4EF0C4",
-          dim: "#2C8F73",
+          DEFAULT: "#f04e4e",
+          dim: "#8f2c36",
         },
         indigo: {
           DEFAULT: "#6C7CFF",

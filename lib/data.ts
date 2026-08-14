@@ -7,7 +7,7 @@ export const profile = {
   phone: "+91 9119792010",
   linkedin: "https://linkedin.com/in/priya-saran-138462291",
   summary:
-    "MERN Stack / Next.js Developer with 2 years of experience shipping production web applications — SEO-optimized marketing sites, internal ERP tools, and customer-facing platforms. Skilled in React, Next.js, Node.js, Express, MongoDB, RESTful API design & integration, responsive UI development, and deploying on Vercel, Render, and Hostinger.",
+    "MERN Stack / Next.js Developer (Gate Qualified) with 2 years of experience shipping production web applications — SEO-optimized marketing sites, internal ERP tools, and customer-facing platforms. Skilled in React, Next.js, Node.js, Express, MongoDB, RESTful API design & integration, responsive UI development, and deploying on Vercel, Render, and Hostinger.",
 };
 
 export const skillGroups = [
@@ -182,6 +182,6 @@ export const navLinks = [
   { label: "Skills", href: "#skills" },
   { label: "Services", href: "#services" },
   { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
+  // { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ];

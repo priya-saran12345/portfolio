@@ -5,16 +5,18 @@ import Services from "@/components/sections/Services";
 import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
+import ScrollCharacter from "@/components/three/ScrollCharacter";
 
 export default function Home() {
   return (
     <main className="relative">
       <Navbar />
+      <ScrollCharacter />
       <Hero />
       <Skills />
       <Services />
       <Experience />
-      <Projects />
+      {/* <Projects /> */}
       <Contact />
     </main>
   );
