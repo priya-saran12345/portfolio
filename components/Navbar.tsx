@@ -15,10 +15,10 @@ const navbarLinks = [
   ),
 
   // New Git Status tab
-  ...navLinks.filter((link) => link.href === "#contact"),
   { label: "Git Status", href: "/github" },
 
   // Keep Contact at the end
+  ...navLinks.filter((link) => link.href === "#contact"),
 ];
 
 function MiniMonkey({ message }: { message: MonkeyMessage }) {

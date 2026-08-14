@@ -1,17 +1,9 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Line, Html } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Html, Line, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-
-/**
- * StackNetwork
- * A literal visualization of the MERN stack: labeled nodes (React, Next.js,
- * Node.js, Express, MongoDB) connected by edges, with particles that travel
- * along the edges like data/API calls. Slowly rotates and responds to
- * pointer movement (parallax tilt) and pointer drag (manual rotate).
- */
 
 type NodeDef = {
   id: string;
@@ -22,78 +14,136 @@ type NodeDef = {
 };
 
 const NODES: NodeDef[] = [
-  { id: "react", label: "React", position: [-2.6, 1.1, 0.4], color: "#6C7CFF", size: 0.16 },
-  { id: "next", label: "Next.js", position: [-1.0, 2.1, -0.6], color: "#E8EAED", size: 0.13 },
-  { id: "node", label: "Node.js", position: [0.4, -1.6, 0.8], color: "#4EF0C4", size: 0.16 },
-  { id: "express", label: "Express", position: [2.2, 0.4, -0.3], color: "#7C8798", size: 0.12 },
-  { id: "mongo", label: "MongoDB", position: [1.4, -0.6, 1.4], color: "#4EF0C4", size: 0.18 },
-  { id: "api", label: "REST API", position: [0.0, 0.6, -1.6], color: "#6C7CFF", size: 0.1 },
+  { id: "react", label: "React", position: [-2.9, 1.1, 0.5], color: "#61DAFB", size: 0.17 },
+  { id: "next", label: "Next.js", position: [-1.45, 2.35, -0.75], color: "#F8FAFC", size: 0.15 },
+  { id: "typescript", label: "TypeScript", position: [-0.15, 1.65, 1.4], color: "#3178C6", size: 0.16 },
+  { id: "tailwind", label: "Tailwind", position: [-3.05, -0.45, -0.85], color: "#38BDF8", size: 0.14 },
+  { id: "redux", label: "Redux", position: [-1.75, -1.55, 0.85], color: "#A78BFA", size: 0.14 },
+  { id: "reactnative", label: "React Native", position: [-2.75, 2.15, 1.35], color: "#61DAFB", size: 0.14 },
+  { id: "api", label: "REST API", position: [0, 0.35, -1.55], color: "#2DD4BF", size: 0.18 },
+  { id: "node", label: "Node.js", position: [0.45, -1.65, 0.8], color: "#68A063", size: 0.17 },
+  { id: "express", label: "Express", position: [2.05, -0.55, -0.65], color: "#CBD5E1", size: 0.14 },
+  { id: "mongo", label: "MongoDB", position: [2.45, 0.65, 1.15], color: "#47A248", size: 0.17 },
+  { id: "sql", label: "SQL Server", position: [3.05, -1.45, 0.35], color: "#F87171", size: 0.15 },
+  { id: "postgres", label: "PostgreSQL", position: [2.8, 1.85, -0.7], color: "#60A5FA", size: 0.15 },
+  { id: "git", label: "Git", position: [-0.65, -2.45, -1.0], color: "#F97316", size: 0.13 },
+  { id: "docker", label: "Docker", position: [0.9, 2.55, 0.35], color: "#2496ED", size: 0.15 },
+  { id: "vercel", label: "Vercel", position: [1.85, 1.8, 1.45], color: "#F8FAFC", size: 0.13 },
+  { id: "render", label: "Render", position: [3.25, 0.05, -1.25], color: "#8B5CF6", size: 0.13 },
 ];
 
 const EDGES: [string, string][] = [
-  ["react", "next"],
-  ["react", "api"],
-  ["next", "api"],
-  ["api", "node"],
-  ["node", "express"],
-  ["express", "mongo"],
-  ["node", "mongo"],
+  ["react", "next"], ["react", "typescript"], ["react", "tailwind"], ["react", "redux"], ["react", "reactnative"],
+  ["next", "typescript"], ["next", "api"], ["tailwind", "next"], ["redux", "api"], ["typescript", "api"], ["reactnative", "api"],
+  ["api", "node"], ["api", "express"], ["node", "express"],
+  ["express", "mongo"], ["express", "sql"], ["express", "postgres"], ["node", "mongo"], ["node", "sql"],
+  ["typescript", "docker"], ["node", "docker"], ["docker", "vercel"], ["docker", "render"], ["next", "vercel"], ["api", "render"],
+  ["git", "react"], ["git", "node"], ["git", "docker"],
 ];
 
 function nodeById(id: string) {
-  return NODES.find((n) => n.id === id)!;
+  const node = NODES.find((item) => item.id === id);
+  if (!node) throw new Error(`Missing StackNetwork node: ${id}`);
+  return node;
 }
 
-function Particle({ from, to, speed, offset }: { from: THREE.Vector3; to: THREE.Vector3; speed: number; offset: number }) {
+function FlowParticle({
+  from,
+  to,
+  speed,
+  offset,
+  color,
+}: {
+  from: THREE.Vector3;
+  to: THREE.Vector3;
+  speed: number;
+  offset: number;
+  color: string;
+}) {
   const ref = useRef<THREE.Mesh>(null);
+
   useFrame(({ clock }) => {
     if (!ref.current) return;
+
     const t = (clock.getElapsedTime() * speed + offset) % 1;
     ref.current.position.lerpVectors(from, to, t);
-    const s = Math.sin(t * Math.PI); // fade in/out along the path
-    ref.current.scale.setScalar(0.5 + s * 0.8);
+
+    const pulse = Math.sin(t * Math.PI);
+    ref.current.scale.setScalar(0.55 + pulse * 0.75);
   });
+
   return (
     <mesh ref={ref}>
-      <sphereGeometry args={[0.035, 8, 8]} />
-      <meshBasicMaterial color="#4EF0C4" toneMapped={false} />
+      <sphereGeometry args={[0.035, 10, 10]} />
+      <meshBasicMaterial color={color} toneMapped={false} />
     </mesh>
   );
 }
 
-function Node({ node }: { node: NodeDef }) {
-  const ref = useRef<THREE.Mesh>(null);
+function SkillNode({ node, index }: { node: NodeDef; index: number }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const ringRef = useRef<THREE.Mesh>(null);
+
   useFrame(({ clock }) => {
-    if (!ref.current) return;
-    const bob = Math.sin(clock.getElapsedTime() * 0.6 + node.position[0]) * 0.06;
-    ref.current.position.y = node.position[1] + bob;
+    const time = clock.getElapsedTime();
+
+    if (meshRef.current) {
+      const scale = 1 + Math.sin(time * 1.15 + index * 0.7) * 0.06;
+      meshRef.current.scale.setScalar(scale);
+    }
+
+    if (ringRef.current) {
+      const scale = 1.6 + (Math.sin(time * 0.8 + index) + 1) * 0.18;
+      ringRef.current.scale.setScalar(scale);
+
+      const material = ringRef.current.material as THREE.MeshBasicMaterial;
+      material.opacity = 0.05 + (Math.sin(time * 0.8 + index) + 1) * 0.025;
+    }
   });
+
   return (
-    <group>
-      <mesh ref={ref} position={node.position}>
-        <sphereGeometry args={[node.size, 24, 24]} />
+    <group position={node.position}>
+      <mesh ref={ringRef}>
+        <sphereGeometry args={[node.size, 16, 16]} />
+        <meshBasicMaterial
+          color={node.color}
+          transparent
+          opacity={0.08}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[node.size, 28, 28]} />
         <meshStandardMaterial
           color={node.color}
           emissive={node.color}
-          emissiveIntensity={0.55}
-          roughness={0.35}
-          metalness={0.1}
+          emissiveIntensity={0.65}
+          roughness={0.28}
+          metalness={0.12}
         />
       </mesh>
-      <Html position={[node.position[0], node.position[1] + node.size + 0.22, node.position[2]]} center distanceFactor={8}>
+
+      <Html
+        position={[0, node.size + 0.22, 0]}
+        center
+        distanceFactor={8}
+        style={{ pointerEvents: "none", userSelect: "none" }}
+      >
         <div
           style={{
             fontFamily: "var(--font-jetbrains), monospace",
-            fontSize: "11px",
-            letterSpacing: "0.04em",
+            fontSize: "10px",
+            letterSpacing: "0.05em",
             color: "#E8EAED",
-            background: "rgba(10,13,19,0.55)",
-            border: "1px solid rgba(232,234,237,0.12)",
-            borderRadius: "4px",
-            padding: "2px 6px",
+            background: "rgba(7,10,15,0.68)",
+            border: "1px solid rgba(232,234,237,0.13)",
+            boxShadow: "0 8px 22px rgba(0,0,0,0.22)",
+            borderRadius: "999px",
+            padding: "3px 7px",
             whiteSpace: "nowrap",
-            pointerEvents: "none",
-            userSelect: "none",
+            backdropFilter: "blur(8px)",
           }}
         >
           {node.label}
@@ -103,90 +153,181 @@ function Node({ node }: { node: NodeDef }) {
   );
 }
 
+function NetworkCore() {
+  const outerRef = useRef<THREE.Mesh>(null);
+  const innerRef = useRef<THREE.Mesh>(null);
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+
+    if (outerRef.current) {
+      outerRef.current.rotation.x = t * 0.08;
+      outerRef.current.rotation.y = t * 0.12;
+    }
+
+    if (innerRef.current) {
+      innerRef.current.scale.setScalar(1 + Math.sin(t * 1.4) * 0.04);
+    }
+  });
+
+  return (
+    <group position={[0, 0.35, -1.55]}>
+      <mesh ref={outerRef}>
+        <icosahedronGeometry args={[0.38, 1]} />
+        <meshBasicMaterial color="#2DD4BF" wireframe transparent opacity={0.22} />
+      </mesh>
+
+      <mesh ref={innerRef}>
+        <sphereGeometry args={[0.09, 20, 20]} />
+        <meshBasicMaterial color="#2DD4BF" toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
 function Scene() {
-  const group = useRef<THREE.Group>(null);
-  const { pointer } = useThree();
-  const dragState = useRef({ dragging: false, lastX: 0, rotY: 0, rotX: 0 });
+  const networkRef = useRef<THREE.Group>(null);
 
   const edgeVectors = useMemo(
     () =>
-      EDGES.map(([a, b]) => {
-        const na = nodeById(a);
-        const nb = nodeById(b);
+      EDGES.map(([a, b], index) => {
+        const start = nodeById(a);
+        const end = nodeById(b);
+
         return {
-          from: new THREE.Vector3(...na.position),
-          to: new THREE.Vector3(...nb.position),
+          id: `${a}-${b}`,
+          from: new THREE.Vector3(...start.position),
+          to: new THREE.Vector3(...end.position),
+          color:
+            index % 3 === 0
+              ? "#2DD4BF"
+              : index % 3 === 1
+              ? "#61DAFB"
+              : "#A78BFA",
         };
       }),
     []
   );
 
-  useFrame(() => {
-    if (!group.current) return;
-    const d = dragState.current;
-    // gentle autorotation plus pointer parallax, blended with manual drag offset
-    const idle = performance.now() * 0.00006;
-    group.current.rotation.y = idle + d.rotY + pointer.x * 0.25;
-    group.current.rotation.x = d.rotX + -pointer.y * 0.12;
+  useFrame(({ clock }) => {
+    if (!networkRef.current) return;
+
+    networkRef.current.position.y =
+      Math.sin(clock.getElapsedTime() * 0.35) * 0.055;
+
+    networkRef.current.rotation.z =
+      Math.sin(clock.getElapsedTime() * 0.16) * 0.018;
   });
 
   return (
-    <group
-      ref={group}
-      onPointerDown={(e) => {
-        dragState.current.dragging = true;
-        dragState.current.lastX = e.clientX;
-      }}
-      onPointerUp={() => (dragState.current.dragging = false)}
-      onPointerLeave={() => (dragState.current.dragging = false)}
-      onPointerMove={(e) => {
-        const d = dragState.current;
-        if (!d.dragging) return;
-        const delta = e.clientX - d.lastX;
-        d.rotY += delta * 0.005;
-        d.lastX = e.clientX;
-      }}
-    >
-      <ambientLight intensity={0.4} />
-      <pointLight position={[3, 3, 3]} intensity={40} color="#4EF0C4" />
-      <pointLight position={[-3, -2, -2]} intensity={25} color="#6C7CFF" />
+    <>
+      <ambientLight intensity={0.55} />
 
-      {EDGES.map(([a, b], i) => {
-        const na = nodeById(a);
-        const nb = nodeById(b);
-        return (
-          <Line
-            key={i}
-            points={[na.position, nb.position]}
-            color="#3A4353"
-            lineWidth={1}
+      <pointLight position={[4, 4, 5]} intensity={38} color="#2DD4BF" />
+      <pointLight position={[-4, -2, 3]} intensity={25} color="#6366F1" />
+      <pointLight position={[0, 0, -4]} intensity={18} color="#38BDF8" />
+
+      <group ref={networkRef}>
+        <mesh>
+          <icosahedronGeometry args={[3.75, 2]} />
+          <meshBasicMaterial
+            color="#2DD4BF"
+            wireframe
             transparent
-            opacity={0.7}
+            opacity={0.025}
+            depthWrite={false}
           />
-        );
-      })}
+        </mesh>
 
-      {edgeVectors.map((e, i) => (
-        <Particle key={i} from={e.from} to={e.to} speed={0.18 + (i % 3) * 0.06} offset={i / edgeVectors.length} />
-      ))}
+        {EDGES.map(([a, b]) => {
+          const start = nodeById(a);
+          const end = nodeById(b);
 
-      {NODES.map((n) => (
-        <Node key={n.id} node={n} />
-      ))}
-    </group>
+          return (
+            <Line
+              key={`${a}-${b}`}
+              points={[start.position, end.position]}
+              color="#495467"
+              lineWidth={0.8}
+              transparent
+              opacity={0.5}
+              depthWrite={false}
+            />
+          );
+        })}
+
+        {edgeVectors.map((edge, index) => (
+          <FlowParticle
+            key={edge.id}
+            from={edge.from}
+            to={edge.to}
+            speed={0.12 + (index % 4) * 0.025}
+            offset={index / edgeVectors.length}
+            color={edge.color}
+          />
+        ))}
+
+        {NODES.map((node, index) => (
+          <SkillNode key={node.id} node={node} index={index} />
+        ))}
+
+        <NetworkCore />
+      </group>
+
+      <OrbitControls
+        makeDefault
+        enableDamping
+        dampingFactor={0.055}
+        autoRotate
+        autoRotateSpeed={0.48}
+        enableRotate
+        rotateSpeed={0.55}
+        enableZoom
+        zoomSpeed={0.6}
+        enablePan={false}
+        minDistance={5.2}
+        maxDistance={10}
+        target={[0, 0, 0]}
+        minPolarAngle={0.25}
+        maxPolarAngle={Math.PI - 0.25}
+      />
+    </>
   );
 }
 
 export default function StackNetwork() {
   return (
-    <div className="absolute inset-0" aria-hidden="true">
+    <div
+      className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing"
+      style={{ touchAction: "none" }}
+      aria-label="Interactive technology network"
+    >
       <Canvas
-        camera={{ position: [0, 0, 6.2], fov: 45 }}
-        dpr={[1, 1.75]}
-        gl={{ antialias: true, alpha: true }}
+        camera={{
+          position: [0, 0, 7.4],
+          fov: 43,
+          near: 0.1,
+          far: 50,
+        }}
+        dpr={[1, 1.6]}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
+          gl.outputColorSpace = THREE.SRGBColorSpace;
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = 1.05;
+        }}
       >
         <Scene />
       </Canvas>
+
+      <div className="pointer-events-none absolute bottom-7 right-7 hidden lg:flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-white/35 backdrop-blur-md">
+        drag · rotate · zoom
+      </div>
     </div>
   );
 }
