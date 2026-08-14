@@ -19,18 +19,19 @@ export default function Hero() {
         <StackNetwork />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 min-h-screen flex flex-col justify-center pt-24 pb-16">
-        <p className="section-label mb-5 animate-fade-up" style={{ animationDelay: "0ms" }}>
-          Full-Stack Developer · Saharanpur, India
+      <div className="relative z-10 max-w-[90%] xl:w-[98%] mx-auto px-6 min-h-screen flex flex-col justify-center pt-24 pb-16">
+        <p className="section-label mb-5 animate-fade-up"
+         style={{ animationDelay: "0ms" }}>
+          Full-Stack Developer ...
         </p>
 
         <h1
           className="font-display font-semibold leading-[1.02] text-[13vw] sm:text-6xl md:text-7xl text-ink animate-fade-up"
           style={{ animationDelay: "80ms" }}
         >
-          {profile.name.split(" ")[0]}
+          {profile.name}
           <br />
-          <span className="text-gradient">{profile.name.split(" ")[1]}</span>
+          {/* <span className="text-gradient">{profile.name.split(" ")[1]}</span> */}
         </h1>
 
         <p

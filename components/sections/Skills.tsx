@@ -5,8 +5,8 @@ import { skillGroups } from "@/lib/data";
 
 export default function Skills() {
   return (
-    <section id="skills" className="relative bg-base border-t border-border py-24 md:py-32">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="skills" className="relative bg-base border-t border-border py-16 md:py-24">
+      <div className="max-w-[90%] xl:w-[98%] mx-auto px-6">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-16">
           <div>
             <p className="section-label mb-3">01 — Toolkit</p>

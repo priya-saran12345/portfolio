@@ -6,7 +6,7 @@ import { projects } from "@/lib/data";
 export default function Projects() {
   return (
     <section id="projects" className="relative bg-surface border-t border-border py-24 md:py-32">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-[90%] xl:w-[98%] mx-auto px-6">
         <div className="mb-16">
           <p className="section-label mb-3">04 — Selected work</p>
           <h2 className="font-display text-3xl md:text-5xl font-semibold text-ink">Projects</h2>

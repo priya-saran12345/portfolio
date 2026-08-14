@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <main className="relative">
       <Navbar />
-      <ScrollCharacter />
+      {/* <ScrollCharacter /> */}
       <Hero />
       <Skills />
       <Services />
