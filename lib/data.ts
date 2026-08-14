@@ -22,8 +22,6 @@ export const skillGroups = [
       "Tailwind CSS",
       "Bootstrap",
       "Redux Toolkit",
-      "GSAP",
-      "Framer Motion",
       "Responsive UI Design",
     ],
   },
@@ -39,6 +37,16 @@ export const skillGroups = [
       "SQL",
     ],
   },
+    {
+  label: "Animation",
+    items: [
+      "GSAP",
+      "Framer Motion",
+      "Three JS"
+    ],
+
+  },
+
   {
     label: "Deployment & Tools",
     items: ["Vercel", "Render", "Hostinger", "Netlify", "Git/GitHub", "Postman", "CI/CD Basics"],
