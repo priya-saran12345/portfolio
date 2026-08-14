@@ -2,16 +2,30 @@
 
 import { motion } from "framer-motion";
 import { services } from "@/lib/data";
+import SkillHeading3D from "../three/SkillHeading3D";
 
 export default function Services() {
   return (
     <section id="services" className="relative bg-surface border-t border-border py-12 md:py-24">
       <div className="max-w-[90%] xl:w-[98%] mx-auto px-6">
-        <div className="mb-16 text-center">
-          <p className="section-label mb-3">02 — What I do</p>
-          <h2 className="font-display text-3xl md:text-5xl font-semibold text-ink">Services</h2>
-        </div>
+<div className="mb-16 flex flex-col justify-center items-center text-center">
+  <p className="section-label mb-3">
+    02 — What I do
+  </p>
 
+  <div
+    className="
+      w-[220px]
+      sm:w-[270px]
+      md:w-[340px]
+      h-[70px]
+      md:h-[95px]
+      -mb-1
+    "
+  >
+    <SkillHeading3D text="Services" />
+  </div>
+</div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 bg-border">
           {services.map((service, i) => (
             <motion.div

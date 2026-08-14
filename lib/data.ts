@@ -87,6 +87,11 @@ export const services = [
     description:
       "Shipping to Vercel, Render, or Hostinger with attention to load performance, navigation speed, and cross-device reliability.",
   },
+  {
+  title: " Mobile Application Development",
+  description:
+    "Developing end-to-end web and mobile applications with modern frontend frameworks, secure APIs, database integration, and scalable backend architecture.",
+},
 ];
 
 export const experience = [

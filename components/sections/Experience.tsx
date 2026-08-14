@@ -35,26 +35,29 @@ export default function Experience() {
           overflow-hidden
         "
       >
-        <div
-          className="
-            absolute
-            right-[-2%]
-            top-[48%]
-            h-[720px]
-            w-[720px]
-            -translate-y-1/2
+<div
+  className="
+    pointer-events-auto
+    absolute
+    left-[20%]
+    top-[48%]
+    h-[720px]
+    w-[720px]
+    -translate-y-1/2
 
-            md:h-[860px]
-            md:w-[860px]
+    md:h-[560px]
+    md:w-[560px]
 
-            xl:right-[1%]
-            xl:h-[980px]
-            xl:w-[980px]
-          "
-        >
-          <EarthGlobe />
-        </div>
-      </div>
+    xl:right-[1%]
+    xl:h-[780px]
+    xl:w-[780px]
+
+    cursor-grab
+    active:cursor-grabbing
+  "
+>
+  <EarthGlobe />
+</div>      </div>
 
       {/* =========================================
           READABILITY OVERLAYS
@@ -115,17 +118,17 @@ export default function Experience() {
       {/* =========================================
           CONTENT
       ========================================== */}
-      <div
-        className="
-          relative
-          z-10
-          max-w-[90%]
-          xl:w-[98%]
-          mx-auto
-          px-6
-        "
-      >
-        {/* Heading */}
+<div
+  className="
+    relative
+    z-10
+    pointer-events-none
+    max-w-[90%]
+    xl:w-[98%]
+    mx-auto
+    px-6
+  "
+>        {/* Heading */}
         <div className="mb-16">
           <p className="section-label mb-3">
             03 — Track record

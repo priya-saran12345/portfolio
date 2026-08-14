@@ -15,7 +15,7 @@ const navbarLinks = [
   ),
 
   // New Git Status tab
-  { label: "Git Status", href: "#git-status" },
+  { label: "Git Status", href: "/github" },
 
   // Keep Contact at the end
   ...navLinks.filter((link) => link.href === "#contact"),
@@ -365,7 +365,7 @@ export default function Navbar() {
         <nav className="max-w-[90%] xl:w-[98%] mx-auto flex items-center justify-between px-6 py-4">
           {/* Logo */}
           <a
-            href="#top"
+            href="/"
             className="font-display font-semibold text-sm tracking-wide text-ink"
           >
             PRIYA<span className="text-teal">.</span>SARAN

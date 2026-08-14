@@ -12,6 +12,7 @@ import {
 
 import { profile } from "@/lib/data";
 import SpotlightBackground from "@/components/three/SpotlightBackground";
+// import FooterIconPage from "../common/footericon";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -276,6 +277,10 @@ export default function Contact() {
                 linkedin.com/in/priya-saran
               </a>
             </div>
+            <div className="mt-3">
+
+            {/* <FooterIconPage/> */}
+            </div>
           </motion.div>
 
           {/* =====================================
@@ -336,7 +341,7 @@ export default function Contact() {
                 htmlFor="name"
                 className="
                   text-xs
-                  font-mono
+                  font-mono 
                   uppercase
                   tracking-widest
                   text-muted
