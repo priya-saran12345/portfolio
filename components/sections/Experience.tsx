@@ -6,7 +6,7 @@ import {
   education,
   certifications,
 } from "@/lib/data";
-
+import CertificateList from "@/components/sections/CertificateList";
 import EarthGlobe from "@/components/three/EarthGlobe";
 
 export default function Experience() {
@@ -399,64 +399,28 @@ export default function Experience() {
             {/* ===============================
                 CERTIFICATIONS
             ================================ */}
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: 20,
-              }}
-              whileInView={{
-                opacity: 1,
-                x: 0,
-              }}
-              viewport={{
-                once: true,
-                margin: "-80px",
-              }}
-              transition={{
-                duration: 0.5,
-                delay: 0.1,
-              }}
-              className="
-                rounded-2xl
-                border
-                border-border
-                bg-base/45
-                backdrop-blur-md
-                p-5
-              "
-            >
-              <h3
-                className="
-                  font-mono
-                  text-xs
-                  tracking-widest
-                  uppercase
-                  text-teal
-                  mb-5
-                "
-              >
-                Certifications
-              </h3>
-
-              <ul className="flex flex-col gap-2">
-                {certifications.map((certification) => (
-                  <li
-                    key={certification}
-                    className="
-                      text-xs
-                      text-ink/70
-                      leading-relaxed
-                      border-b
-                      border-border
-                      pb-2
-                    "
-                  >
-                    {certification}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          </div>
+<motion.div
+  initial={{
+    opacity: 0,
+    x: 20,
+  }}
+  whileInView={{
+    opacity: 1,
+    x: 0,
+  }}
+  viewport={{
+    once: true,
+    margin: "-80px",
+  }}
+  transition={{
+    duration: 0.5,
+    delay: 0.1,
+  }}
+>
+  <CertificateList
+    certifications={certifications}
+  />
+</motion.div>          </div>
         </div>
       </div>
     </section>

@@ -182,14 +182,38 @@ export const education = [
 ];
 
 export const certifications = [
-  "MERN Stack Development (Groot Software)",
-  "Full Stack Dev Internship (Bharat Intern)",
-  "Java Internship (Internpe)",
-  "AI & ML Training (Hexanbit Edutech)",
-  "Front-End Development & Coding Interview Prep (Meta)",
-  "Oracle SQL (Coursera)",
-  "Cloud Computing (IBM)",
-  "Leadership Certification (IIMA)",
+  {
+    name: "MERN Stack Development (Groot Software)",
+    certificate: "/certificates/mern-stack-development.jpg",
+  },
+  {
+    name: "Full Stack Dev Internship (Bharat Intern)",
+    certificate: "/certificates/public/certificates/bharat-intern-webdevelopment.jpg",
+  },
+  {
+    name: "Java Internship (Internpe)",
+    certificate: "/certificates/java-internpay.png",
+  },
+  {
+    name: "AI & ML Training (Hexanbit Edutech)",
+    certificate: "/certificates/aiml.jpg",
+  },
+  {
+    name: "Front-End Development & Coding Interview Prep (Meta)",
+    certificate: "/certificates/front-end.jpg",
+  },
+  {
+    name: "Oracle SQL (Coursera)",
+    certificate: "/certificates/Coursera-sql.jpg",
+  },
+  {
+    name: "Cloud Computing (IBM)",
+    certificate: "/certificates/cloud-ibm.jpg",
+  },
+  // {
+  //   name: "Leadership Certification (IIMA)",
+  //   certificate: "/certificates/leadership-iima.jpg",
+  // },
 ];
 
 export const navLinks = [
