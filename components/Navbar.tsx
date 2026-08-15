@@ -1,27 +1,69 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import {
+  usePathname,
+  useRouter,
+} from "next/navigation";
+
 import { navLinks } from "@/lib/data";
-import { Menu, X, PhoneCall, ChevronRight } from "lucide-react";
 
-type MonkeyMessage = "Hi 👋" | "Bye bye 👋" | "";
+import {
+  ChevronRight,
+  Menu,
+  PhoneCall,
+  X,
+} from "lucide-react";
 
-const navbarLinks = [
-  { label: "Home", href: "#top" },
+type MonkeyMessage =
+  | "Hi 👋"
+  | "Bye bye 👋"
+  | "";
 
-  // Existing tabs except Home and Contact
+type NavItem = {
+  label: string;
+  href: string;
+};
+
+/*
+ * Logical navigation:
+ *
+ * Hash links belong to the HOME page.
+ * /github is a separate Next.js page.
+ */
+const navbarLinks: NavItem[] = [
+  {
+    label: "Home",
+    href: "#top",
+  },
+
   ...navLinks.filter(
-    (link) => link.href !== "#top" && link.href !== "#contact"
+    (link) =>
+      link.href !== "#top" &&
+      link.href !== "#contact"
   ),
 
-  // New Git Status tab
-  { label: "Git Status", href: "/github" },
+  {
+    label: "Git Status",
+    href: "/github",
+  },
 
-  // Keep Contact at the end
-  ...navLinks.filter((link) => link.href === "#contact"),
+  ...navLinks.filter(
+    (link) =>
+      link.href === "#contact"
+  ),
 ];
 
-function MiniMonkey({ message }: { message: MonkeyMessage }) {
+function MiniMonkey({
+  message,
+}: {
+  message: MonkeyMessage;
+}) {
   if (!message) return null;
 
   return (
@@ -38,15 +80,17 @@ function MiniMonkey({ message }: { message: MonkeyMessage }) {
       "
     >
       <div className="flex flex-col items-center">
-        {/* Speech bubble */}
+        {/* speech bubble */}
         <div
           className="
             relative
             whitespace-nowrap
             rounded-full
-            border border-teal/30
+            border
+            border-teal/30
             bg-base/95
-            px-2.5 py-1
+            px-2.5
+            py-1
             font-mono
             text-[10px]
             font-semibold
@@ -56,6 +100,7 @@ function MiniMonkey({ message }: { message: MonkeyMessage }) {
           "
         >
           {message}
+
           <span
             className="
               absolute
@@ -74,7 +119,7 @@ function MiniMonkey({ message }: { message: MonkeyMessage }) {
           />
         </div>
 
-        {/* Small cute monkey */}
+        {/* monkey */}
         <div
           className="
             relative
@@ -86,26 +131,107 @@ function MiniMonkey({ message }: { message: MonkeyMessage }) {
         >
           <svg
             viewBox="0 0 100 100"
-            className="h-full w-full drop-shadow-[0_4px_5px_rgba(0,0,0,0.35)]"
+            className="
+              h-full
+              w-full
+              drop-shadow-[0_4px_5px_rgba(0,0,0,0.35)]
+            "
             aria-hidden="true"
           >
-            <circle cx="17" cy="47" r="14" fill="#8b4f2b" />
-            <circle cx="83" cy="47" r="14" fill="#8b4f2b" />
-            <circle cx="17" cy="47" r="8" fill="#e8b27c" />
-            <circle cx="83" cy="47" r="8" fill="#e8b27c" />
+            <circle
+              cx="17"
+              cy="47"
+              r="14"
+              fill="#8b4f2b"
+            />
 
-            <circle cx="50" cy="45" r="35" fill="#8b4f2b" />
+            <circle
+              cx="83"
+              cy="47"
+              r="14"
+              fill="#8b4f2b"
+            />
 
-            <ellipse cx="50" cy="56" rx="27" ry="24" fill="#f1c18c" />
-            <ellipse cx="39" cy="42" rx="13" ry="15" fill="#f1c18c" />
-            <ellipse cx="61" cy="42" rx="13" ry="15" fill="#f1c18c" />
+            <circle
+              cx="17"
+              cy="47"
+              r="8"
+              fill="#e8b27c"
+            />
 
-            <circle cx="39" cy="44" r="3.4" fill="#1f1712" />
-            <circle cx="61" cy="44" r="3.4" fill="#1f1712" />
-            <circle cx="40" cy="43" r="1" fill="#ffffff" />
-            <circle cx="62" cy="43" r="1" fill="#ffffff" />
+            <circle
+              cx="83"
+              cy="47"
+              r="8"
+              fill="#e8b27c"
+            />
 
-            <ellipse cx="50" cy="56" rx="4" ry="3" fill="#6e3d24" />
+            <circle
+              cx="50"
+              cy="45"
+              r="35"
+              fill="#8b4f2b"
+            />
+
+            <ellipse
+              cx="50"
+              cy="56"
+              rx="27"
+              ry="24"
+              fill="#f1c18c"
+            />
+
+            <ellipse
+              cx="39"
+              cy="42"
+              rx="13"
+              ry="15"
+              fill="#f1c18c"
+            />
+
+            <ellipse
+              cx="61"
+              cy="42"
+              rx="13"
+              ry="15"
+              fill="#f1c18c"
+            />
+
+            <circle
+              cx="39"
+              cy="44"
+              r="3.4"
+              fill="#1f1712"
+            />
+
+            <circle
+              cx="61"
+              cy="44"
+              r="3.4"
+              fill="#1f1712"
+            />
+
+            <circle
+              cx="40"
+              cy="43"
+              r="1"
+              fill="#ffffff"
+            />
+
+            <circle
+              cx="62"
+              cy="43"
+              r="1"
+              fill="#ffffff"
+            />
+
+            <ellipse
+              cx="50"
+              cy="56"
+              rx="4"
+              ry="3"
+              fill="#6e3d24"
+            />
 
             <path
               d="M40 64 Q50 72 60 64"
@@ -116,7 +242,7 @@ function MiniMonkey({ message }: { message: MonkeyMessage }) {
             />
           </svg>
 
-          {/* Waving hand */}
+          {/* waving hand */}
           <span
             className="
               absolute
@@ -131,7 +257,7 @@ function MiniMonkey({ message }: { message: MonkeyMessage }) {
             👋
           </span>
 
-          {/* Teal glow */}
+          {/* glow */}
           <span
             className="
               absolute
@@ -153,156 +279,401 @@ function MiniMonkey({ message }: { message: MonkeyMessage }) {
 }
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const router =
+    useRouter();
 
-  const [activeHref, setActiveHref] = useState("#top");
+  const pathname =
+    usePathname();
 
-  const [monkeyHref, setMonkeyHref] = useState<string>("");
-  const [monkeyMessage, setMonkeyMessage] =
+  const isHomePage =
+    pathname === "/";
+
+  const [
+    open,
+    setOpen,
+  ] = useState(false);
+
+  const [
+    scrolled,
+    setScrolled,
+  ] = useState(false);
+
+  const [
+    activeHref,
+    setActiveHref,
+  ] = useState(
+    pathname === "/github"
+      ? "/github"
+      : "#top"
+  );
+
+  const [
+    monkeyHref,
+    setMonkeyHref,
+  ] = useState("");
+
+  const [
+    monkeyMessage,
+    setMonkeyMessage,
+  ] =
     useState<MonkeyMessage>("");
 
-  const navigationTargetRef = useRef<string | null>(null);
-  const greetingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
-  const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const navigationTargetRef =
+    useRef<string | null>(
+      null
+    );
 
-  const clearMonkeyTimers = () => {
-    if (greetingTimerRef.current) {
-      clearTimeout(greetingTimerRef.current);
-    }
+  const greetingTimerRef =
+    useRef<ReturnType<
+      typeof setTimeout
+    > | null>(null);
 
-    if (leaveTimerRef.current) {
-      clearTimeout(leaveTimerRef.current);
-    }
-  };
+  const leaveTimerRef =
+    useRef<ReturnType<
+      typeof setTimeout
+    > | null>(null);
+
+  /* =========================================
+     MONKEY HELPERS
+  ========================================== */
+
+  const clearMonkeyTimers =
+    () => {
+      if (
+        greetingTimerRef.current
+      ) {
+        clearTimeout(
+          greetingTimerRef.current
+        );
+
+        greetingTimerRef.current =
+          null;
+      }
+
+      if (
+        leaveTimerRef.current
+      ) {
+        clearTimeout(
+          leaveTimerRef.current
+        );
+
+        leaveTimerRef.current =
+          null;
+      }
+    };
 
   const showMonkey = (
     href: string,
     message: MonkeyMessage,
     duration = 1000
   ) => {
-    if (greetingTimerRef.current) {
-      clearTimeout(greetingTimerRef.current);
+    if (
+      greetingTimerRef.current
+    ) {
+      clearTimeout(
+        greetingTimerRef.current
+      );
     }
 
     setMonkeyHref(href);
     setMonkeyMessage(message);
 
-    greetingTimerRef.current = setTimeout(() => {
-      setMonkeyMessage("");
-    }, duration);
+    greetingTimerRef.current =
+      setTimeout(() => {
+        setMonkeyMessage("");
+      }, duration);
   };
+
+  /* =========================================
+     BUILD THE REAL URL
+
+     Home section while already at /
+       #skills
+
+     Home section while at /github
+       /#skills
+
+     GitHub
+       /github
+  ========================================== */
+
+  const resolveHref = (
+    href: string
+  ) => {
+    if (
+      href.startsWith("#")
+    ) {
+      return isHomePage
+        ? href
+        : `/${href}`;
+    }
+
+    return href;
+  };
+
+  /* =========================================
+     PAGE-LEVEL ACTIVE STATE
+
+     /        -> home sections handled below
+     /github  -> Git Status
+  ========================================== */
+
+  useEffect(() => {
+    setOpen(false);
+
+    if (
+      pathname === "/github"
+    ) {
+      navigationTargetRef.current =
+        null;
+
+      setActiveHref(
+        "/github"
+      );
+
+      return;
+    }
+
+    if (
+      pathname === "/"
+    ) {
+      const currentHash =
+        window.location.hash;
+
+      const validHash =
+        currentHash &&
+        navbarLinks.some(
+          (link) =>
+            link.href ===
+            currentHash
+        );
+
+      setActiveHref(
+        validHash
+          ? currentHash
+          : "#top"
+      );
+    }
+  }, [pathname]);
+
+  /* =========================================
+     NAVBAR BACKGROUND + HOME TOP STATE
+  ========================================== */
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 12);
+      setScrolled(
+        window.scrollY > 12
+      );
 
-      // Keep Home active while the page is at the top.
-      if (window.scrollY < 120 && navigationTargetRef.current === null) {
-        setActiveHref((previous) => {
-          if (previous !== "#top") {
-            showMonkey("#top", "Hi 👋", 900);
+      /*
+       * Only calculate Home from scrolling
+       * when we are actually on the Home page.
+       */
+      if (!isHomePage) {
+        return;
+      }
+
+      if (
+        window.scrollY < 120 &&
+        navigationTargetRef.current ===
+          null
+      ) {
+        setActiveHref(
+          (previous) => {
+            if (
+              previous !==
+              "#top"
+            ) {
+              showMonkey(
+                "#top",
+                "Hi 👋",
+                900
+              );
+            }
+
+            return "#top";
           }
-
-          return "#top";
-        });
+        );
       }
     };
 
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
 
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
-
-  /*
-   * Watch every portfolio section.
-   * When a new section becomes active:
-   *  - update active nav item
-   *  - move monkey there
-   *  - say "Hi 👋"
-   */
-  useEffect(() => {
-    const observedSections: HTMLElement[] = [];
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              b.intersectionRatio - a.intersectionRatio
-          );
-
-        const bestEntry = visibleEntries[0];
-
-        if (!bestEntry) return;
-
-        const sectionId = bestEntry.target.id;
-        const href = `#${sectionId}`;
-
-        const existsInNav = navbarLinks.some(
-          (link) => link.href === href
-        );
-
-        if (!existsInNav) return;
-
-        setActiveHref((previous) => {
-          if (previous === href) return previous;
-
-          /*
-           * During navbar navigation we only greet when
-           * the requested target section is reached.
-           */
-          if (navigationTargetRef.current) {
-            if (navigationTargetRef.current === href) {
-              navigationTargetRef.current = null;
-              showMonkey(href, "Hi 👋", 1250);
-            }
-          } else {
-            /*
-             * Manual mouse / trackpad scrolling:
-             * greet the new section automatically.
-             */
-            showMonkey(href, "Hi 👋", 900);
-          }
-
-          return href;
-        });
-      },
+    window.addEventListener(
+      "scroll",
+      onScroll,
       {
-        root: null,
-        rootMargin: "-30% 0px -50% 0px",
-        threshold: [0.05, 0.2, 0.4, 0.6],
+        passive: true,
       }
     );
 
-    navbarLinks.forEach((link) => {
-      if (!link.href.startsWith("#")) return;
+    return () => {
+      window.removeEventListener(
+        "scroll",
+        onScroll
+      );
+    };
+  }, [isHomePage]);
 
-      const id = link.href.slice(1);
-      const section = document.getElementById(id);
+  /* =========================================
+     HOME SECTION OBSERVER
 
-      if (section) {
-        observer.observe(section);
-        observedSections.push(section);
+     IMPORTANT:
+     Do not run it on /github because those
+     sections are not on that page.
+  ========================================== */
+
+  useEffect(() => {
+    if (!isHomePage) {
+      return;
+    }
+
+    const observedSections:
+      HTMLElement[] = [];
+
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          const visibleEntries =
+            entries
+              .filter(
+                (entry) =>
+                  entry.isIntersecting
+              )
+              .sort(
+                (a, b) =>
+                  b.intersectionRatio -
+                  a.intersectionRatio
+              );
+
+          const bestEntry =
+            visibleEntries[0];
+
+          if (!bestEntry) {
+            return;
+          }
+
+          const sectionId =
+            bestEntry.target.id;
+
+          const href =
+            `#${sectionId}`;
+
+          const existsInNav =
+            navbarLinks.some(
+              (link) =>
+                link.href ===
+                href
+            );
+
+          if (!existsInNav) {
+            return;
+          }
+
+          setActiveHref(
+            (previous) => {
+              if (
+                previous === href
+              ) {
+                return previous;
+              }
+
+              /*
+               * Navbar click in progress:
+               * greet only when the intended
+               * section has actually arrived.
+               */
+              if (
+                navigationTargetRef.current
+              ) {
+                if (
+                  navigationTargetRef.current ===
+                  href
+                ) {
+                  navigationTargetRef.current =
+                    null;
+
+                  showMonkey(
+                    href,
+                    "Hi 👋",
+                    1250
+                  );
+                }
+              } else {
+                /*
+                 * Manual scrolling.
+                 */
+                showMonkey(
+                  href,
+                  "Hi 👋",
+                  900
+                );
+              }
+
+              return href;
+            }
+          );
+        },
+        {
+          root: null,
+          rootMargin:
+            "-30% 0px -50% 0px",
+          threshold: [
+            0.05,
+            0.2,
+            0.4,
+            0.6,
+          ],
+        }
+      );
+
+    navbarLinks.forEach(
+      (link) => {
+        if (
+          !link.href.startsWith(
+            "#"
+          )
+        ) {
+          return;
+        }
+
+        const id =
+          link.href.slice(1);
+
+        const section =
+          document.getElementById(
+            id
+          );
+
+        if (section) {
+          observer.observe(
+            section
+          );
+
+          observedSections.push(
+            section
+          );
+        }
       }
-    });
+    );
 
     return () => {
-      observedSections.forEach((section) => {
-        observer.unobserve(section);
-      });
+      observedSections.forEach(
+        (section) => {
+          observer.unobserve(
+            section
+          );
+        }
+      );
 
       observer.disconnect();
     };
-  }, []);
+  }, [isHomePage]);
+
+  /* =========================================
+     CLEANUP
+  ========================================== */
 
   useEffect(() => {
     return () => {
@@ -310,175 +681,377 @@ export default function Navbar() {
     };
   }, []);
 
+  /* =========================================
+     NAVIGATE
+
+     CASE 1:
+     Home hash -> Home hash
+       smooth scroll
+
+     CASE 2:
+     GitHub -> Home hash
+       router.push("/#skills")
+
+     CASE 3:
+     Home -> /github
+       router.push("/github")
+  ========================================== */
+
   const navigateTo = (
     event: React.MouseEvent<HTMLAnchorElement>,
     href: string
   ) => {
     event.preventDefault();
+
     setOpen(false);
     clearMonkeyTimers();
 
     /*
-     * First show BYE BYE on the section we are leaving.
+     * Already on the same standalone page.
      */
-    const leavingHref = activeHref || href;
+    if (
+      href === "/github" &&
+      pathname === "/github"
+    ) {
+      setActiveHref(
+        "/github"
+      );
 
-    setMonkeyHref(leavingHref);
-    setMonkeyMessage("Bye bye 👋");
+      showMonkey(
+        "/github",
+        "Hi 👋",
+        900
+      );
 
-    navigationTargetRef.current = href;
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      return;
+    }
+
+    const leavingHref =
+      activeHref || href;
+
+    setMonkeyHref(
+      leavingHref
+    );
+
+    setMonkeyMessage(
+      "Bye bye 👋"
+    );
 
     /*
-     * Give the monkey a short moment to wave,
-     * then start the smooth scroll.
+     * Keep target so the Home IntersectionObserver
+     * can greet once the destination section arrives.
      */
-    leaveTimerRef.current = setTimeout(() => {
-      setMonkeyMessage("");
+    navigationTargetRef.current =
+      href.startsWith("#")
+        ? href
+        : null;
 
-      if (href.startsWith("#")) {
-        const target = document.querySelector(href);
+    leaveTimerRef.current =
+      setTimeout(() => {
+        setMonkeyMessage("");
 
-        if (target) {
-          target.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
+        /* =====================================
+           HOME SECTION
+        ====================================== */
 
-          window.history.pushState(null, "", href);
+        if (
+          href.startsWith(
+            "#"
+          )
+        ) {
+          /*
+           * Already on Home:
+           * smooth-scroll without a page change.
+           */
+          if (isHomePage) {
+            const target =
+              document.querySelector(
+                href
+              );
+
+            if (target) {
+              target.scrollIntoView(
+                {
+                  behavior:
+                    "smooth",
+                  block: "start",
+                }
+              );
+
+              window.history.pushState(
+                null,
+                "",
+                href
+              );
+
+              return;
+            }
+          }
+
+          /*
+           * We are on /github.
+           * Go back to the homepage AND the
+           * requested section.
+           *
+           * Example:
+           * /github -> /#experience
+           */
+          router.push(
+            `/${href}`
+          );
+
           return;
         }
-      }
 
-      window.location.href = href;
-    }, 520);
+        /* =====================================
+           INTERNAL NEXT.JS PAGE
+        ====================================== */
+
+        if (
+          href.startsWith("/")
+        ) {
+          router.push(href);
+          return;
+        }
+
+        /* =====================================
+           EXTERNAL FALLBACK
+        ====================================== */
+
+        window.location.href =
+          href;
+      }, 520);
   };
 
   return (
     <>
       <header
-        className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
-          scrolled
-            ? "bg-base/85 backdrop-blur-md"
-            : "bg-transparent border-b border-border"
-        }`}
+        className={`
+          fixed
+          top-0
+          inset-x-0
+          z-50
+          transition-colors
+          duration-300
+
+          ${
+            scrolled
+              ? "bg-base/85 backdrop-blur-md border-b border-border/70"
+              : "bg-transparent border-b border-border"
+          }
+        `}
       >
-        <nav className="max-w-[90%] xl:w-[98%] mx-auto flex items-center justify-between px-6 py-4">
-          {/* Logo */}
+        <nav
+          className="
+            max-w-[90%]
+            xl:w-[98%]
+            mx-auto
+            flex
+            items-center
+            justify-between
+            px-6
+            py-4
+          "
+        >
+          {/* =====================================
+              LOGO
+          ====================================== */}
+
           <a
             href="/"
-            className="font-display font-semibold text-sm tracking-wide text-ink"
+            onClick={(
+              event
+            ) =>
+              navigateTo(
+                event,
+                "#top"
+              )
+            }
+            className="
+              font-display
+              font-semibold
+              text-sm
+              tracking-wide
+              text-ink
+            "
           >
-            PRIYA<span className="text-teal">.</span>SARAN
+            PRIYA
+            <span className="text-teal">
+              .
+            </span>
+            SARAN
           </a>
 
-          {/* Desktop navigation */}
-          <ul className="hidden md:flex items-center gap-8">
-            {navbarLinks.map((link) => {
-              const isActive = activeHref === link.href;
-              const showMonkeyHere =
-                monkeyHref === link.href &&
-                Boolean(monkeyMessage);
+          {/* =====================================
+              DESKTOP
+          ====================================== */}
 
-              return (
-                <li
-                  key={link.href}
-                  className="relative"
-                >
-                  <a
-                    href={link.href}
-                    onClick={(event) =>
-                      navigateTo(event, link.href)
+          <ul
+            className="
+              hidden
+              md:flex
+              items-center
+              gap-8
+            "
+          >
+            {navbarLinks.map(
+              (link) => {
+                const isActive =
+                  activeHref ===
+                  link.href;
+
+                const showMonkeyHere =
+                  monkeyHref ===
+                    link.href &&
+                  Boolean(
+                    monkeyMessage
+                  );
+
+                const browserHref =
+                  resolveHref(
+                    link.href
+                  );
+
+                return (
+                  <li
+                    key={
+                      link.href
                     }
-                    className={`
-                      group
-                      relative
-                      inline-block
-                      pb-2
-                      text-sm
-                      transition-colors
-                      duration-300
-                      font-mono
-                      tracking-wide
-                      ${
-                        isActive
-                          ? "text-teal"
-                          : "text-muted hover:text-teal"
-                      }
-                    `}
+                    className="relative"
                   >
-                    {link.label}
-
-                    {/* Teal increasing underline */}
-                    <span
+                    <a
+                      href={
+                        browserHref
+                      }
+                      onClick={(
+                        event
+                      ) =>
+                        navigateTo(
+                          event,
+                          link.href
+                        )
+                      }
                       className={`
-                        pointer-events-none
-                        absolute
-                        left-0
-                        bottom-0
-                        h-[2px]
-                        rounded-full
-                        bg-teal
-                        transition-all
-                        duration-500
-                        ease-out
+                        group
+                        relative
+                        inline-block
+                        pb-2
+                        text-sm
+                        transition-colors
+                        duration-300
+                        font-mono
+                        tracking-wide
+
                         ${
                           isActive
-                            ? "w-full opacity-80"
-                            : "w-0 group-hover:w-full"
-                        }
-                      `}
-                    />
-
-                    {/* Moving arrow at front of line */}
-                    <span
-                      className={`
-                        pointer-events-none
-                        absolute
-                        bottom-[-7px]
-                        z-10
-                        flex
-                        h-4
-                        w-4
-                        items-center
-                        justify-center
-                        rounded-full
-                        bg-base
-                        text-teal
-                        transition-all
-                        duration-500
-                        ease-out
-                        shadow-[0_0_6px_#2dd4bf,0_0_14px_rgba(45,212,191,0.8)]
-                        ${
-                          isActive
-                            ? "left-[calc(100%-7px)] opacity-100"
-                            : "left-[-5px] opacity-0 group-hover:left-[calc(100%-7px)] group-hover:opacity-100"
+                            ? "text-teal"
+                            : "text-muted hover:text-teal"
                         }
                       `}
                     >
-                      <ChevronRight
-                        size={14}
-                        strokeWidth={3}
-                        className="drop-shadow-[0_0_4px_#2dd4bf]"
-                      />
-                    </span>
+                      {
+                        link.label
+                      }
 
-                    {/* Monkey sits on this nav item */}
-                    {showMonkeyHere && (
-                      <MiniMonkey
-                        message={monkeyMessage}
+                      {/* underline */}
+                      <span
+                        className={`
+                          pointer-events-none
+                          absolute
+                          left-0
+                          bottom-0
+                          h-[2px]
+                          rounded-full
+                          bg-teal
+                          transition-all
+                          duration-500
+                          ease-out
+
+                          ${
+                            isActive
+                              ? "w-full opacity-80"
+                              : "w-0 group-hover:w-full"
+                          }
+                        `}
                       />
-                    )}
-                  </a>
-                </li>
-              );
-            })}
+
+                      {/* moving chevron */}
+                      <span
+                        className={`
+                          pointer-events-none
+                          absolute
+                          bottom-[-7px]
+                          z-10
+                          flex
+                          h-4
+                          w-4
+                          items-center
+                          justify-center
+                          rounded-full
+                          bg-base
+                          text-teal
+                          transition-all
+                          duration-500
+                          ease-out
+                          shadow-[0_0_6px_#2dd4bf,0_0_14px_rgba(45,212,191,0.8)]
+
+                          ${
+                            isActive
+                              ? "left-[calc(100%-7px)] opacity-100"
+                              : "left-[-5px] opacity-0 group-hover:left-[calc(100%-7px)] group-hover:opacity-100"
+                          }
+                        `}
+                      >
+                        <ChevronRight
+                          size={14}
+                          strokeWidth={
+                            3
+                          }
+                          className="
+                            drop-shadow-[0_0_4px_#2dd4bf]
+                          "
+                        />
+                      </span>
+
+                      {showMonkeyHere && (
+                        <MiniMonkey
+                          message={
+                            monkeyMessage
+                          }
+                        />
+                      )}
+                    </a>
+                  </li>
+                );
+              }
+            )}
           </ul>
 
-          {/* Let's talk */}
+          {/* =====================================
+              LET'S TALK
+
+              On /github this resolves naturally
+              back to /#contact.
+          ====================================== */}
+
           <a
-            href="#contact"
-            onClick={(event) =>
-              navigateTo(event, "#contact")
+            href={
+              isHomePage
+                ? "#contact"
+                : "/#contact"
+            }
+            onClick={(
+              event
+            ) =>
+              navigateTo(
+                event,
+                "#contact"
+              )
             }
             className="
               hidden
@@ -499,86 +1072,184 @@ export default function Navbar() {
               duration-300
             "
           >
-            <span className="relative flex h-5 w-5 items-center justify-center">
-              <span className="absolute inset-0 rounded-full bg-emerald-400/20 animate-ping" />
+            <span
+              className="
+                relative
+                flex
+                h-5
+                w-5
+                items-center
+                justify-center
+              "
+            >
+              <span
+                className="
+                  absolute
+                  inset-0
+                  rounded-full
+                  bg-emerald-400/20
+                  animate-ping
+                "
+              />
+
               <PhoneCall
                 size={15}
                 strokeWidth={2}
-                className="relative z-10 text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.75)]"
+                className="
+                  relative
+                  z-10
+                  text-emerald-400
+                  drop-shadow-[0_0_5px_rgba(52,211,153,0.75)]
+                "
               />
             </span>
 
             Let&apos;s talk
           </a>
 
-          {/* Mobile menu */}
+          {/* =====================================
+              MOBILE TOGGLE
+          ====================================== */}
+
           <button
-            className="md:hidden text-ink"
-            onClick={() => setOpen((value) => !value)}
-            aria-label={
-              open ? "Close menu" : "Open menu"
+            type="button"
+            className="
+              md:hidden
+              text-ink
+            "
+            onClick={() =>
+              setOpen(
+                (value) =>
+                  !value
+              )
             }
-            aria-expanded={open}
+            aria-label={
+              open
+                ? "Close menu"
+                : "Open menu"
+            }
+            aria-expanded={
+              open
+            }
           >
             {open ? (
               <X size={22} />
             ) : (
-              <Menu size={22} />
+              <Menu
+                size={22}
+              />
             )}
           </button>
         </nav>
 
-        {/* Mobile navigation */}
-        {open && (
-          <div className="md:hidden bg-base/95 backdrop-blur-md border-b border-border px-6 pb-6">
-            <ul className="flex flex-col gap-4 pt-2">
-              {navbarLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    onClick={(event) =>
-                      navigateTo(event, link.href)
-                    }
-                    className="
-                      group
-                      relative
-                      inline-block
-                      pb-2
-                      text-base
-                      text-ink
-                      hover:text-teal
-                      font-mono
-                      transition-colors
-                      duration-300
-                    "
-                  >
-                    {link.label}
+        {/* =====================================
+            MOBILE MENU
+        ====================================== */}
 
-                    <span
-                      className="
-                        pointer-events-none
-                        absolute
-                        left-0
-                        bottom-0
-                        h-[2px]
-                        w-0
-                        rounded-full
-                        bg-teal
-                        transition-all
-                        duration-500
-                        ease-out
-                        group-hover:w-full
-                      "
-                    />
-                  </a>
-                </li>
-              ))}
+        {open && (
+          <div
+            className="
+              md:hidden
+              bg-base/95
+              backdrop-blur-md
+              border-b
+              border-border
+              px-6
+              pb-6
+            "
+          >
+            <ul
+              className="
+                flex
+                flex-col
+                gap-4
+                pt-2
+              "
+            >
+              {navbarLinks.map(
+                (link) => {
+                  const isActive =
+                    activeHref ===
+                    link.href;
+
+                  return (
+                    <li
+                      key={
+                        link.href
+                      }
+                    >
+                      <a
+                        href={resolveHref(
+                          link.href
+                        )}
+                        onClick={(
+                          event
+                        ) =>
+                          navigateTo(
+                            event,
+                            link.href
+                          )
+                        }
+                        className={`
+                          group
+                          relative
+                          inline-block
+                          pb-2
+                          text-base
+                          font-mono
+                          transition-colors
+                          duration-300
+
+                          ${
+                            isActive
+                              ? "text-teal"
+                              : "text-ink hover:text-teal"
+                          }
+                        `}
+                      >
+                        {
+                          link.label
+                        }
+
+                        <span
+                          className={`
+                            pointer-events-none
+                            absolute
+                            left-0
+                            bottom-0
+                            h-[2px]
+                            rounded-full
+                            bg-teal
+                            transition-all
+                            duration-500
+
+                            ${
+                              isActive
+                                ? "w-full"
+                                : "w-0 group-hover:w-full"
+                            }
+                          `}
+                        />
+                      </a>
+                    </li>
+                  );
+                }
+              )}
 
               <li>
                 <a
-                  href="#contact"
-                  onClick={(event) =>
-                    navigateTo(event, "#contact")
+                  href={
+                    isHomePage
+                      ? "#contact"
+                      : "/#contact"
+                  }
+                  onClick={(
+                    event
+                  ) =>
+                    navigateTo(
+                      event,
+                      "#contact"
+                    )
                   }
                   className="
                     inline-flex
@@ -599,12 +1270,36 @@ export default function Navbar() {
                     duration-300
                   "
                 >
-                  <span className="relative flex h-5 w-5 items-center justify-center">
-                    <span className="absolute inset-0 rounded-full bg-emerald-400/20 animate-ping" />
+                  <span
+                    className="
+                      relative
+                      flex
+                      h-5
+                      w-5
+                      items-center
+                      justify-center
+                    "
+                  >
+                    <span
+                      className="
+                        absolute
+                        inset-0
+                        rounded-full
+                        bg-emerald-400/20
+                        animate-ping
+                      "
+                    />
+
                     <PhoneCall
                       size={15}
-                      strokeWidth={2}
-                      className="relative z-10 text-emerald-400"
+                      strokeWidth={
+                        2
+                      }
+                      className="
+                        relative
+                        z-10
+                        text-emerald-400
+                      "
                     />
                   </span>
 
@@ -616,40 +1311,65 @@ export default function Navbar() {
         )}
       </header>
 
+      {/* =========================================
+          MONKEY ANIMATIONS
+      ========================================== */}
+
       <style jsx global>{`
         @keyframes monkeyWave {
           from {
-            transform: rotate(-18deg);
+            transform: rotate(
+              -18deg
+            );
           }
+
           to {
-            transform: rotate(22deg);
+            transform: rotate(
+              22deg
+            );
           }
         }
 
         @keyframes monkeyBob {
           from {
-            transform: translateY(0) rotate(-1deg);
+            transform: translateY(
+                0
+              )
+              rotate(-1deg);
           }
+
           to {
-            transform: translateY(-3px) rotate(1deg);
+            transform: translateY(
+                -3px
+              )
+              rotate(1deg);
           }
         }
 
         @keyframes monkeyPop {
           from {
             opacity: 0;
-            transform: translate(-50%, -4px) scale(0.75);
+            transform: translate(
+                -50%,
+                -4px
+              )
+              scale(0.75);
           }
+
           to {
             opacity: 1;
-            transform: translate(-50%, 0) scale(1);
+            transform: translate(
+                -50%,
+                0
+              )
+              scale(1);
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .animate-\[monkeyWave_\.3s_ease-in-out_infinite_alternate\],
-          .animate-\[monkeyBob_\.55s_ease-in-out_infinite_alternate\],
-          .animate-\[monkeyPop_\.28s_ease-out\] {
+          .animate-\\[monkeyWave_\\.3s_ease-in-out_infinite_alternate\\],
+          .animate-\\[monkeyBob_\\.55s_ease-in-out_infinite_alternate\\],
+          .animate-\\[monkeyPop_\\.28s_ease-out\\] {
             animation: none !important;
           }
         }

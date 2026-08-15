@@ -227,9 +227,9 @@ function Scene() {
       <pointLight position={[-4, -2, 3]} intensity={25} color="#6366F1" />
       <pointLight position={[0, 0, -4]} intensity={18} color="#38BDF8" />
 
-      <group ref={networkRef}>
+      <group ref={networkRef} scale={0.68}>
         <mesh>
-          <icosahedronGeometry args={[3.75, 2]} />
+          <icosahedronGeometry args={[3.0, 2]} />
           <meshBasicMaterial
             color="#2DD4BF"
             wireframe
@@ -285,8 +285,8 @@ function Scene() {
         enableZoom
         zoomSpeed={0.6}
         enablePan={false}
-        minDistance={5.2}
-        maxDistance={10}
+        minDistance={7}
+        maxDistance={12.5}
         target={[0, 0, 0]}
         minPolarAngle={0.25}
         maxPolarAngle={Math.PI - 0.25}
@@ -304,8 +304,8 @@ export default function StackNetwork() {
     >
       <Canvas
         camera={{
-          position: [0, 0, 7.4],
-          fov: 43,
+          position: [0, 0, 9.2],
+          fov: 38,
           near: 0.1,
           far: 50,
         }}
