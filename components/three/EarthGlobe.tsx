@@ -1,764 +1,301 @@
 "use client";
 
-import {
-  Suspense,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
-
-import {
-  Canvas,
-  useFrame,
-} from "@react-three/fiber";
-
-import {
-  OrbitControls,
-  useTexture,
-} from "@react-three/drei";
-
+import { useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-import DAY from "@/public/texture/earth/earth_day_4096.jpg";
-import NIGHT from "@/public/texture/earth/earth_night_4096.jpg";
-import PACKED from "@/public/texture/earth/earth_bump_roughness_clouds_4096.jpg";
-
 /* =========================================================
-   EARTH VERTEX SHADER
+   SCREEN CODE LINE
 ========================================================= */
 
-const earthVertex = `
-varying vec2 vUv;
-varying vec3 vWorldNormal;
-varying vec3 vWorldPosition;
-
-void main() {
-  vUv = uv;
-
-  vec4 worldPosition =
-    modelMatrix * vec4(position, 1.0);
-
-  vWorldPosition =
-    worldPosition.xyz;
-
-  vWorldNormal =
-    normalize(
-      mat3(modelMatrix) * normal
-    );
-
-  gl_Position =
-    projectionMatrix *
-    viewMatrix *
-    worldPosition;
-}
-`;
-
-/* =========================================================
-   EARTH FRAGMENT SHADER
-========================================================= */
-
-const earthFragment = `
-uniform sampler2D dayMap;
-uniform sampler2D nightMap;
-uniform sampler2D packedMap;
-
-uniform vec3 sunDirection;
-
-uniform vec3 atmosphereDayColor;
-uniform vec3 atmosphereTwilightColor;
-
-varying vec2 vUv;
-varying vec3 vWorldNormal;
-varying vec3 vWorldPosition;
-
-void main() {
-
-  vec3 normal =
-    normalize(vWorldNormal);
-
-  vec3 viewDirection =
-    normalize(
-      cameraPosition -
-      vWorldPosition
-    );
-
-  /* -----------------------------------------
-     SUN DIRECTION
-  ----------------------------------------- */
-
-  float sunOrientation =
-    dot(
-      normal,
-      normalize(sunDirection)
-    );
-
-  /* -----------------------------------------
-     TEXTURES
-  ----------------------------------------- */
-
-  vec3 dayColor =
-    texture2D(
-      dayMap,
-      vUv
-    ).rgb;
-
-  vec3 nightColor =
-    texture2D(
-      nightMap,
-      vUv
-    ).rgb;
-
-  vec3 packed =
-    texture2D(
-      packedMap,
-      vUv
-    ).rgb;
-
-  /* -----------------------------------------
-     CLOUDS
-  ----------------------------------------- */
-
-  float clouds =
-    smoothstep(
-      0.2,
-      1.0,
-      packed.b
-    );
-
-  dayColor =
-    mix(
-      dayColor,
-      vec3(1.0),
-      clouds * 0.60
-    );
-
-  /* -----------------------------------------
-     DAY / NIGHT TRANSITION
-  ----------------------------------------- */
-
-  float dayStrength =
-    smoothstep(
-      -0.25,
-      0.5,
-      sunOrientation
-    );
-
-  vec3 finalColor =
-    mix(
-      nightColor * 1.35,
-      dayColor,
-      dayStrength
-    );
-
-  /* -----------------------------------------
-     FRESNEL
-  ----------------------------------------- */
-
-  float fresnel =
-    1.0 -
-    abs(
-      dot(
-        viewDirection,
-        normal
-      )
-    );
-
-  fresnel =
-    pow(
-      clamp(
-        fresnel,
-        0.0,
-        1.0
-      ),
-      2.0
-    );
-
-  /* -----------------------------------------
-     ATMOSPHERE COLOR
-  ----------------------------------------- */
-
-  vec3 atmosphereColor =
-    mix(
-      atmosphereTwilightColor,
-      atmosphereDayColor,
-
-      smoothstep(
-        -0.25,
-        0.75,
-        sunOrientation
-      )
-    );
-
-  float atmosphereMix =
-    smoothstep(
-      -0.5,
-      1.0,
-      sunOrientation
-    )
-    *
-    fresnel
-    *
-    0.65;
-
-  finalColor =
-    mix(
-      finalColor,
-      atmosphereColor,
-
-      clamp(
-        atmosphereMix,
-        0.0,
-        1.0
-      )
-    );
-
-  gl_FragColor =
-    vec4(
-      finalColor,
-      1.0
-    );
-
-  #include <tonemapping_fragment>
-  #include <colorspace_fragment>
-}
-`;
-
-/* =========================================================
-   ATMOSPHERE VERTEX
-========================================================= */
-
-const atmosphereVertex = `
-varying vec3 vWorldNormal;
-varying vec3 vWorldPosition;
-
-void main() {
-
-  vec4 worldPosition =
-    modelMatrix *
-    vec4(
-      position,
-      1.0
-    );
-
-  vWorldPosition =
-    worldPosition.xyz;
-
-  vWorldNormal =
-    normalize(
-      mat3(modelMatrix) *
-      normal
-    );
-
-  gl_Position =
-    projectionMatrix *
-    viewMatrix *
-    worldPosition;
-}
-`;
-
-/* =========================================================
-   ATMOSPHERE FRAGMENT
-========================================================= */
-
-const atmosphereFragment = `
-uniform vec3 sunDirection;
-
-uniform vec3 atmosphereDayColor;
-uniform vec3 atmosphereTwilightColor;
-
-varying vec3 vWorldNormal;
-varying vec3 vWorldPosition;
-
-void main() {
-
-  vec3 normal =
-    normalize(vWorldNormal);
-
-  vec3 viewDirection =
-    normalize(
-      cameraPosition -
-      vWorldPosition
-    );
-
-  /* -----------------------------------------
-     FRESNEL
-  ----------------------------------------- */
-
-  float fresnel =
-    1.0 -
-    abs(
-      dot(
-        viewDirection,
-        normal
-      )
-    );
-
-  /* -----------------------------------------
-     SUN
-  ----------------------------------------- */
-
-  float sunOrientation =
-    dot(
-      normal,
-      normalize(sunDirection)
-    );
-
-  /* -----------------------------------------
-     BLUE / ORANGE ATMOSPHERE
-  ----------------------------------------- */
-
-  vec3 atmosphereColor =
-    mix(
-      atmosphereTwilightColor,
-      atmosphereDayColor,
-
-      smoothstep(
-        -0.25,
-        0.75,
-        sunOrientation
-      )
-    );
-
-  /* -----------------------------------------
-     EDGE GLOW
-  ----------------------------------------- */
-
-  float alpha =
-    pow(
-      smoothstep(
-        0.2,
-        1.0,
-        fresnel
-      ),
-      2.3
-    );
-
-  alpha *=
-    smoothstep(
-      -0.5,
-      1.0,
-      sunOrientation
-    );
-
-  gl_FragColor =
-    vec4(
-      atmosphereColor,
-      alpha * 0.95
-    );
-
-  #include <tonemapping_fragment>
-  #include <colorspace_fragment>
-}
-`;
-
-/* =========================================================
-   EARTH
-========================================================= */
-
-function Earth() {
-  const group =
-    useRef<THREE.Group>(null);
-
-  /* -------------------------------------------------------
-     IMPORTANT:
-     Imported Next.js images become StaticImageData.
-
-     useTexture needs URL strings,
-     therefore we use .src
-  ------------------------------------------------------- */
-
-  const [
-    day,
-    night,
-    packed,
-  ] = useTexture([
-    DAY.src,
-    NIGHT.src,
-    PACKED.src,
-  ]);
-
-  /* -------------------------------------------------------
-     TEXTURE SETTINGS
-  ------------------------------------------------------- */
-
-  useEffect(() => {
-    day.colorSpace =
-      THREE.SRGBColorSpace;
-
-    night.colorSpace =
-      THREE.SRGBColorSpace;
-
-    day.anisotropy = 8;
-    night.anisotropy = 8;
-    packed.anisotropy = 8;
-
-    day.needsUpdate = true;
-    night.needsUpdate = true;
-    packed.needsUpdate = true;
-  }, [
-    day,
-    night,
-    packed,
-  ]);
-
-  /* -------------------------------------------------------
-     SUN DIRECTION
-  ------------------------------------------------------- */
-
-  const sunDirection =
-    useMemo(
-      () =>
-        new THREE.Vector3(
-          0.25,
-          0.08,
-          1
-        ).normalize(),
-      []
-    );
-
-  /* -------------------------------------------------------
-     EARTH UNIFORMS
-  ------------------------------------------------------- */
-
-  const earthUniforms =
-    useMemo(
-      () => ({
-        dayMap: {
-          value: day,
-        },
-
-        nightMap: {
-          value: night,
-        },
-
-        packedMap: {
-          value: packed,
-        },
-
-        sunDirection: {
-          value:
-            sunDirection,
-        },
-
-        atmosphereDayColor: {
-          value:
-            new THREE.Color(
-              "#4db2ff"
-            ),
-        },
-
-        atmosphereTwilightColor: {
-          value:
-            new THREE.Color(
-              "#bc490b"
-            ),
-        },
-      }),
-      [
-        day,
-        night,
-        packed,
-        sunDirection,
-      ]
-    );
-
-  /* -------------------------------------------------------
-     ATMOSPHERE UNIFORMS
-  ------------------------------------------------------- */
-
-  const atmosphereUniforms =
-    useMemo(
-      () => ({
-        sunDirection: {
-          value:
-            sunDirection,
-        },
-
-        atmosphereDayColor: {
-          value:
-            new THREE.Color(
-              "#4db2ff"
-            ),
-        },
-
-        atmosphereTwilightColor: {
-          value:
-            new THREE.Color(
-              "#bc490b"
-            ),
-        },
-      }),
-      [sunDirection]
-    );
-
-  /* -------------------------------------------------------
-     AUTOMATIC ROTATION
-
-     OrbitControls rotates the camera.
-     This continues rotating the Earth slowly.
-  ------------------------------------------------------- */
-
-  useFrame((_, delta) => {
-    if (!group.current)
-      return;
-
-    group.current.rotation.y +=
-      delta * 0.025;
-  });
-
+function CodeLine({
+  x,
+  y,
+  width,
+  opacity = 1,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  opacity?: number;
+}) {
   return (
-    <group ref={group}>
-
-      {/* =====================================
-          EARTH
-      ====================================== */}
-
-      <mesh>
-        <sphereGeometry
-          args={[
-            1,
-            96,
-            96,
-          ]}
-        />
-
-        <shaderMaterial
-          vertexShader={
-            earthVertex
-          }
-          fragmentShader={
-            earthFragment
-          }
-          uniforms={
-            earthUniforms
-          }
-        />
-      </mesh>
-
-      {/* =====================================
-          ATMOSPHERE
-      ====================================== */}
-
-      <mesh
-        scale={1.04}
-      >
-        <sphereGeometry
-          args={[
-            1,
-            96,
-            96,
-          ]}
-        />
-
-        <shaderMaterial
-          vertexShader={
-            atmosphereVertex
-          }
-          fragmentShader={
-            atmosphereFragment
-          }
-          uniforms={
-            atmosphereUniforms
-          }
-          side={
-            THREE.BackSide
-          }
-          transparent
-          depthWrite={false}
-          blending={
-            THREE.AdditiveBlending
-          }
-        />
-      </mesh>
-
-    </group>
-  );
-}
-
-/* =========================================================
-   LOADING EARTH
-========================================================= */
-
-function LoadingEarth() {
-  return (
-    <mesh>
-      <sphereGeometry
-        args={[
-          1,
-          32,
-          32,
-        ]}
-      />
-
+    <mesh position={[x, y, 0.011]}>
+      <planeGeometry args={[width, 0.025]} />
       <meshBasicMaterial
-        color="#164e63"
-        wireframe
+        color="#22D3EE"
         transparent
-        opacity={0.35}
+        opacity={opacity}
+        toneMapped={false}
       />
     </mesh>
   );
 }
 
 /* =========================================================
-   MAIN COMPONENT
+   LAPTOP MODEL
+========================================================= */
+
+function LaptopModel() {
+  const group = useRef<THREE.Group>(null);
+
+  useFrame(({ clock }, delta) => {
+    if (!group.current) return;
+
+    const t = clock.getElapsedTime();
+
+    // Full 360 self rotation
+    group.current.rotation.y += delta * 0.45;
+
+    // Small floating / presentation motion
+    group.current.rotation.x = -0.055 + Math.sin(t * 0.45) * 0.012;
+    group.current.rotation.z = Math.sin(t * 0.35) * 0.01;
+    group.current.position.y = Math.sin(t * 0.75) * 0.035;
+  });
+
+  return (
+    <group
+      ref={group}
+      scale={0.92}
+      position={[0, -0.05, 0]}
+      rotation={[-0.055, -0.22, 0]}
+    >
+      {/* =====================================================
+          SCREEN / LID
+      ====================================================== */}
+      <group position={[0, 0.35, -0.43]} rotation={[-0.1, 0, 0]}>
+        {/* outer lid */}
+        <mesh>
+          <boxGeometry args={[2.34, 1.43, 0.085]} />
+          <meshStandardMaterial
+            color="#47515F"
+            roughness={0.28}
+            metalness={0.72}
+          />
+        </mesh>
+
+        {/* inner bezel */}
+        <mesh position={[0, 0, 0.048]}>
+          <boxGeometry args={[2.18, 1.27, 0.018]} />
+          <meshStandardMaterial
+            color="#11161D"
+            roughness={0.45}
+            metalness={0.35}
+          />
+        </mesh>
+
+        {/* screen */}
+        <mesh position={[0, 0, 0.059]}>
+          <planeGeometry args={[2.02, 1.1]} />
+          <meshBasicMaterial color="#07171E" toneMapped={false} />
+        </mesh>
+
+        {/* screen cyan wash */}
+        <mesh position={[0, 0, 0.064]}>
+          <planeGeometry args={[2.02, 1.1]} />
+          <meshBasicMaterial
+            color="#22D3EE"
+            transparent
+            opacity={0.075}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </mesh>
+
+        {/* title bar */}
+        <mesh position={[0, 0.36, 0.071]}>
+          <planeGeometry args={[1.82, 0.012]} />
+          <meshBasicMaterial color="#4B6474" transparent opacity={0.7} />
+        </mesh>
+
+        {/* screen dots */}
+        {[
+          [-0.82, 0.44, "#22D3EE"],
+          [-0.73, 0.44, "#60A5FA"],
+          [-0.64, 0.44, "#94A3B8"],
+        ].map(([x, y, color], index) => (
+          <mesh key={index} position={[x as number, y as number, 0.071]}>
+            <circleGeometry args={[0.022, 18]} />
+            <meshBasicMaterial color={color as string} toneMapped={false} />
+          </mesh>
+        ))}
+
+        {/* code */}
+        <group position={[-0.74, 0.16, 0.071]}>
+          <CodeLine x={0.24} y={0.08} width={0.48} opacity={1} />
+          <CodeLine x={0.48} y={-0.08} width={0.94} opacity={0.72} />
+          <CodeLine x={0.35} y={-0.24} width={0.68} opacity={0.92} />
+          <CodeLine x={0.58} y={-0.4} width={1.14} opacity={0.62} />
+          <CodeLine x={0.42} y={-0.56} width={0.82} opacity={0.82} />
+        </group>
+
+        {/* webcam */}
+        <mesh position={[0, 0.655, 0.048]}>
+          <sphereGeometry args={[0.015, 12, 12]} />
+          <meshBasicMaterial color="#0A0D12" />
+        </mesh>
+      </group>
+
+      {/* =====================================================
+          BASE
+      ====================================================== */}
+      <group position={[0, -0.56, 0.2]}>
+        {/* base */}
+        <mesh>
+          <boxGeometry args={[2.42, 0.105, 1.52]} />
+          <meshStandardMaterial
+            color="#414B58"
+            roughness={0.3}
+            metalness={0.76}
+          />
+        </mesh>
+
+        {/* keyboard deck */}
+        <mesh position={[0, 0.065, -0.02]}>
+          <boxGeometry args={[2.3, 0.026, 1.38]} />
+          <meshStandardMaterial
+            color="#2B333D"
+            roughness={0.35}
+            metalness={0.58}
+          />
+        </mesh>
+
+        {/* keyboard */}
+        <group position={[0, 0.092, -0.2]}>
+          {Array.from({ length: 5 }).map((_, row) =>
+            Array.from({ length: 11 }).map((__, col) => (
+              <mesh
+                key={`${row}-${col}`}
+                position={[-0.89 + col * 0.178, 0, -0.37 + row * 0.155]}
+              >
+                <boxGeometry args={[0.128, 0.015, 0.09]} />
+                <meshStandardMaterial
+                  color="#0F141A"
+                  roughness={0.55}
+                  metalness={0.28}
+                />
+              </mesh>
+            ))
+          )}
+        </group>
+
+        {/* trackpad */}
+        <mesh position={[0, 0.093, 0.45]}>
+          <boxGeometry args={[0.76, 0.01, 0.39]} />
+          <meshStandardMaterial
+            color="#596473"
+            roughness={0.34}
+            metalness={0.55}
+          />
+        </mesh>
+
+        {/* cyan front edge */}
+        <mesh position={[0, 0, 0.765]}>
+          <boxGeometry args={[1.3, 0.018, 0.015]} />
+          <meshBasicMaterial
+            color="#22D3EE"
+            transparent
+            opacity={0.58}
+            toneMapped={false}
+          />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+/* =========================================================
+   SCENE
+========================================================= */
+
+function Scene() {
+  return (
+    <>
+      {/* enough ambient light to reveal the laptop body */}
+      <ambientLight intensity={1.65} />
+
+      {/* focused top/front spotlight */}
+      <spotLight
+        position={[1.7, 4.8, 4.6]}
+        intensity={58}
+        angle={0.34}
+        penumbra={0.78}
+        decay={1.8}
+        distance={11}
+        color="#FFFFFF"
+      />
+
+      {/* soft front fill */}
+      <directionalLight position={[3.6, 2.8, 5]} intensity={3.0} color="#EAF2FF" />
+
+      {/* cyan rim */}
+      <pointLight
+        position={[-3.2, 0.7, 2.6]}
+        intensity={25}
+        distance={9}
+        color="#22D3EE"
+      />
+
+      {/* blue rear separation */}
+      <pointLight
+        position={[2.6, 1.6, -3]}
+        intensity={16}
+        distance={8}
+        color="#60A5FA"
+      />
+
+      {/* subtle floor glow */}
+      <mesh position={[0, -1.18, 0.25]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.75, 64]} />
+        <meshBasicMaterial
+          color="#22D3EE"
+          transparent
+          opacity={0.055}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+      <LaptopModel />
+    </>
+  );
+}
+
+/* =========================================================
+   DROP-IN REPLACEMENT
 ========================================================= */
 
 export default function EarthGlobe() {
   return (
     <div
-      className="
-        relative
-        h-full
-        w-full
-        cursor-grab
-        active:cursor-grabbing
-      "
-      style={{
-        touchAction: "none",
-      }}
+      className="relative h-full w-full"
+      aria-label="Animated 3D developer laptop"
     >
       <Canvas
-        dpr={[
-          1,
-          1.5,
-        ]}
+        dpr={[1, 1.5]}
         camera={{
-          position: [
-            4.5,
-            2,
-            3,
-          ],
-          fov: 25,
+          position: [3.1, 1.35, 5.5],
+          fov: 27,
           near: 0.1,
           far: 100,
         }}
         gl={{
           antialias: true,
           alpha: true,
-
-          powerPreference:
-            "high-performance",
+          powerPreference: "high-performance",
         }}
-        onCreated={({
-          gl,
-          camera,
-        }) => {
-
-          /* Transparent background */
-
-          gl.setClearColor(
-            0x000000,
-            0
-          );
-
-          /* Correct colors */
-
-          gl.outputColorSpace =
-            THREE.SRGBColorSpace;
-
-          /* Tone mapping */
-
-          gl.toneMapping =
-            THREE.ACESFilmicToneMapping;
-
-          gl.toneMappingExposure =
-            1.05;
-
-          /* Point camera to Earth */
-
-          camera.lookAt(
-            0,
-            0,
-            0
-          );
+        onCreated={({ gl, camera }) => {
+          gl.setClearColor(0x000000, 0);
+          gl.outputColorSpace = THREE.SRGBColorSpace;
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = 1.14;
+          camera.lookAt(0, -0.08, 0);
         }}
       >
-
-        {/* ===================================
-            EARTH
-        ==================================== */}
-
-        <Suspense
-          fallback={
-            <LoadingEarth />
-          }
-        >
-          <Earth />
-        </Suspense>
-
-        {/* ===================================
-            MOUSE CONTROLS
-
-            Left drag  = rotate
-            Wheel      = zoom
-            Right drag = disabled
-        ==================================== */}
-
-        <OrbitControls
-          makeDefault
-
-          /* Smooth movement */
-          enableDamping
-          dampingFactor={
-            0.055
-          }
-
-          /* Rotation */
-          enableRotate
-          rotateSpeed={
-            0.55
-          }
-
-          /* Zoom */
-          enableZoom
-          zoomSpeed={
-            0.65
-          }
-
-          /* No camera panning */
-          enablePan={
-            false
-          }
-
-          /* Zoom limits */
-          minDistance={
-            2.2
-          }
-
-          maxDistance={
-            9
-          }
-
-          /* Globe center */
-          target={[
-            0,
-            0,
-            0,
-          ]}
-
-          /* Prevent flipping */
-          minPolarAngle={
-            0.15
-          }
-
-          maxPolarAngle={
-            Math.PI -
-            0.15
-          }
-        />
-
+        <Scene />
       </Canvas>
     </div>
   );
 }
-
-/* =========================================================
-   PRELOAD TEXTURES
-========================================================= */
-
-useTexture.preload([
-  DAY.src,
-  NIGHT.src,
-  PACKED.src,
-]);

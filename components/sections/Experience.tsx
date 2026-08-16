@@ -19,12 +19,14 @@ export default function Experience() {
         overflow-hidden
         border-t
         border-border
-        py-24
-        md:py-32
+        py-14
+        md:py-22
       "
     >
       {/* =========================================
-          THREE.JS EARTH BACKGROUND
+          3D LAPTOP BACKGROUND
+          Positioned on the RIGHT so it does not sit
+          behind the Experience timeline text.
       ========================================== */}
       <div
         className="
@@ -35,34 +37,46 @@ export default function Experience() {
           overflow-hidden
         "
       >
-<div
-  className="
-    pointer-events-auto
-    absolute
-    left-[20%]
-    top-[48%]
-    h-[720px]
-    w-[720px]
-    -translate-y-1/2
+        <div
+          className="
+            absolute
+            right-[-8%]
+            top-[50%]
+            h-[390px]
+            w-[390px]
+            -translate-y-1/2
 
-    md:h-[560px]
-    md:w-[560px]
+            sm:right-[-5%]
+            sm:h-[440px]
+            sm:w-[440px]
 
-    xl:right-[1%]
-    xl:h-[780px]
-    xl:w-[780px]
+            md:right-[-2%]
+            md:h-[500px]
+            md:w-[500px]
 
-    cursor-grab
-    active:cursor-grabbing
-  "
->
-  <EarthGlobe />
-</div>      </div>
+            lg:right-[0%]
+            lg:h-[560px]
+            lg:w-[560px]
+
+            xl:right-[2%]
+            xl:h-[620px]
+            xl:w-[620px]
+
+            2xl:right-[4%]
+            2xl:h-[660px]
+            2xl:w-[660px]
+          "
+        >
+          <EarthGlobe />
+        </div>
+      </div>
 
       {/* =========================================
           READABILITY OVERLAYS
-          Strong on the left, open on the right
-          so the globe stays visible.
+
+          Left side stays dark for Experience text.
+          Right side remains open so the laptop is
+          clearly visible.
       ========================================== */}
       <div
         className="
@@ -72,21 +86,29 @@ export default function Experience() {
           z-[1]
           bg-gradient-to-r
           from-base
-          via-base/80
-          to-transparent
+          from-[0%]
+          via-base/95
+          via-[46%]
+          to-base/15
         "
       />
 
+      {/* Very light right-side veil only */}
       <div
         className="
           pointer-events-none
           absolute
-          inset-0
+          inset-y-0
+          right-0
           z-[1]
-          bg-base/10
+          w-[42%]
+          bg-gradient-to-l
+          from-transparent
+          to-base/5
         "
       />
 
+      {/* Top fade */}
       <div
         className="
           pointer-events-none
@@ -101,6 +123,7 @@ export default function Experience() {
         "
       />
 
+      {/* Bottom fade */}
       <div
         className="
           pointer-events-none
@@ -128,7 +151,8 @@ export default function Experience() {
     mx-auto
     px-6
   "
->        {/* Heading */}
+>
+        {/* Heading */}
         <div className="mb-16">
           <p className="section-label mb-3">
             03 — Track record
@@ -420,7 +444,8 @@ export default function Experience() {
   <CertificateList
     certifications={certifications}
   />
-</motion.div>          </div>
+</motion.div>
+          </div>
         </div>
       </div>
     </section>

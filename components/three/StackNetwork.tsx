@@ -2,43 +2,64 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Html, Line, OrbitControls } from "@react-three/drei";
+import { Html, Line } from "@react-three/drei";
 import * as THREE from "three";
 
 type NodeDef = {
   id: string;
   label: string;
   position: [number, number, number];
-  color: string;
   size: number;
 };
 
 const NODES: NodeDef[] = [
-  { id: "react", label: "React", position: [-2.9, 1.1, 0.5], color: "#61DAFB", size: 0.17 },
-  { id: "next", label: "Next.js", position: [-1.45, 2.35, -0.75], color: "#F8FAFC", size: 0.15 },
-  { id: "typescript", label: "TypeScript", position: [-0.15, 1.65, 1.4], color: "#3178C6", size: 0.16 },
-  { id: "tailwind", label: "Tailwind", position: [-3.05, -0.45, -0.85], color: "#38BDF8", size: 0.14 },
-  { id: "redux", label: "Redux", position: [-1.75, -1.55, 0.85], color: "#A78BFA", size: 0.14 },
-  { id: "reactnative", label: "React Native", position: [-2.75, 2.15, 1.35], color: "#61DAFB", size: 0.14 },
-  { id: "api", label: "REST API", position: [0, 0.35, -1.55], color: "#2DD4BF", size: 0.18 },
-  { id: "node", label: "Node.js", position: [0.45, -1.65, 0.8], color: "#68A063", size: 0.17 },
-  { id: "express", label: "Express", position: [2.05, -0.55, -0.65], color: "#CBD5E1", size: 0.14 },
-  { id: "mongo", label: "MongoDB", position: [2.45, 0.65, 1.15], color: "#47A248", size: 0.17 },
-  { id: "sql", label: "SQL Server", position: [3.05, -1.45, 0.35], color: "#F87171", size: 0.15 },
-  { id: "postgres", label: "PostgreSQL", position: [2.8, 1.85, -0.7], color: "#60A5FA", size: 0.15 },
-  { id: "git", label: "Git", position: [-0.65, -2.45, -1.0], color: "#F97316", size: 0.13 },
-  { id: "docker", label: "Docker", position: [0.9, 2.55, 0.35], color: "#2496ED", size: 0.15 },
-  { id: "vercel", label: "Vercel", position: [1.85, 1.8, 1.45], color: "#F8FAFC", size: 0.13 },
-  { id: "render", label: "Render", position: [3.25, 0.05, -1.25], color: "#8B5CF6", size: 0.13 },
+  { id: "react", label: "React", position: [-2.9, 1.1, 0.5], size: 0.17 },
+  { id: "next", label: "Next.js", position: [-1.45, 2.35, -0.75], size: 0.15 },
+  { id: "typescript", label: "TypeScript", position: [-0.15, 1.65, 1.4], size: 0.16 },
+  { id: "tailwind", label: "Tailwind", position: [-3.05, -0.45, -0.85], size: 0.14 },
+  { id: "redux", label: "Redux", position: [-1.75, -1.55, 0.85], size: 0.14 },
+  { id: "reactnative", label: "React Native", position: [-2.75, 2.15, 1.35], size: 0.14 },
+  { id: "api", label: "REST API", position: [0, 0.35, -1.55], size: 0.18 },
+  { id: "node", label: "Node.js", position: [0.45, -1.65, 0.8], size: 0.17 },
+  { id: "express", label: "Express", position: [2.05, -0.55, -0.65], size: 0.14 },
+  { id: "mongo", label: "MongoDB", position: [2.45, 0.65, 1.15], size: 0.17 },
+  { id: "sql", label: "SQL Server", position: [3.05, -1.45, 0.35], size: 0.15 },
+  { id: "postgres", label: "PostgreSQL", position: [2.8, 1.85, -0.7], size: 0.15 },
+  { id: "git", label: "Git", position: [-0.65, -2.45, -1.0], size: 0.13 },
+  { id: "docker", label: "Docker", position: [0.9, 2.55, 0.35], size: 0.15 },
+  { id: "vercel", label: "Vercel", position: [1.85, 1.8, 1.45], size: 0.13 },
+  { id: "render", label: "Render", position: [3.25, 0.05, -1.25], size: 0.13 },
 ];
 
 const EDGES: [string, string][] = [
-  ["react", "next"], ["react", "typescript"], ["react", "tailwind"], ["react", "redux"], ["react", "reactnative"],
-  ["next", "typescript"], ["next", "api"], ["tailwind", "next"], ["redux", "api"], ["typescript", "api"], ["reactnative", "api"],
-  ["api", "node"], ["api", "express"], ["node", "express"],
-  ["express", "mongo"], ["express", "sql"], ["express", "postgres"], ["node", "mongo"], ["node", "sql"],
-  ["typescript", "docker"], ["node", "docker"], ["docker", "vercel"], ["docker", "render"], ["next", "vercel"], ["api", "render"],
-  ["git", "react"], ["git", "node"], ["git", "docker"],
+  ["react", "next"],
+  ["react", "typescript"],
+  ["react", "tailwind"],
+  ["react", "redux"],
+  ["react", "reactnative"],
+  ["next", "typescript"],
+  ["next", "api"],
+  ["tailwind", "next"],
+  ["redux", "api"],
+  ["typescript", "api"],
+  ["reactnative", "api"],
+  ["api", "node"],
+  ["api", "express"],
+  ["node", "express"],
+  ["express", "mongo"],
+  ["express", "sql"],
+  ["express", "postgres"],
+  ["node", "mongo"],
+  ["node", "sql"],
+  ["typescript", "docker"],
+  ["node", "docker"],
+  ["docker", "vercel"],
+  ["docker", "render"],
+  ["next", "vercel"],
+  ["api", "render"],
+  ["git", "react"],
+  ["git", "node"],
+  ["git", "docker"],
 ];
 
 function nodeById(id: string) {
@@ -52,13 +73,11 @@ function FlowParticle({
   to,
   speed,
   offset,
-  color,
 }: {
   from: THREE.Vector3;
   to: THREE.Vector3;
   speed: number;
   offset: number;
-  color: string;
 }) {
   const ref = useRef<THREE.Mesh>(null);
 
@@ -75,7 +94,7 @@ function FlowParticle({
   return (
     <mesh ref={ref}>
       <sphereGeometry args={[0.035, 10, 10]} />
-      <meshBasicMaterial color={color} toneMapped={false} />
+      <meshBasicMaterial color="#FFFFFF" toneMapped={false} />
     </mesh>
   );
 }
@@ -97,7 +116,8 @@ function SkillNode({ node, index }: { node: NodeDef; index: number }) {
       ringRef.current.scale.setScalar(scale);
 
       const material = ringRef.current.material as THREE.MeshBasicMaterial;
-      material.opacity = 0.05 + (Math.sin(time * 0.8 + index) + 1) * 0.025;
+      material.opacity =
+        0.045 + (Math.sin(time * 0.8 + index) + 1) * 0.02;
     }
   });
 
@@ -106,9 +126,9 @@ function SkillNode({ node, index }: { node: NodeDef; index: number }) {
       <mesh ref={ringRef}>
         <sphereGeometry args={[node.size, 16, 16]} />
         <meshBasicMaterial
-          color={node.color}
+          color="#FFFFFF"
           transparent
-          opacity={0.08}
+          opacity={0.07}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
@@ -117,11 +137,11 @@ function SkillNode({ node, index }: { node: NodeDef; index: number }) {
       <mesh ref={meshRef}>
         <sphereGeometry args={[node.size, 28, 28]} />
         <meshStandardMaterial
-          color={node.color}
-          emissive={node.color}
-          emissiveIntensity={0.65}
-          roughness={0.28}
-          metalness={0.12}
+          color="#F5F5F5"
+          emissive="#FFFFFF"
+          emissiveIntensity={0.32}
+          roughness={0.35}
+          metalness={0.08}
         />
       </mesh>
 
@@ -136,10 +156,10 @@ function SkillNode({ node, index }: { node: NodeDef; index: number }) {
             fontFamily: "var(--font-jetbrains), monospace",
             fontSize: "10px",
             letterSpacing: "0.05em",
-            color: "#E8EAED",
-            background: "rgba(7,10,15,0.68)",
-            border: "1px solid rgba(232,234,237,0.13)",
-            boxShadow: "0 8px 22px rgba(0,0,0,0.22)",
+            color: "#FFFFFF",
+            background: "rgba(0,0,0,0.72)",
+            border: "1px solid rgba(255,255,255,0.14)",
+            boxShadow: "0 8px 22px rgba(0,0,0,0.28)",
             borderRadius: "999px",
             padding: "3px 7px",
             whiteSpace: "nowrap",
@@ -174,12 +194,17 @@ function NetworkCore() {
     <group position={[0, 0.35, -1.55]}>
       <mesh ref={outerRef}>
         <icosahedronGeometry args={[0.38, 1]} />
-        <meshBasicMaterial color="#2DD4BF" wireframe transparent opacity={0.22} />
+        <meshBasicMaterial
+          color="#FFFFFF"
+          wireframe
+          transparent
+          opacity={0.18}
+        />
       </mesh>
 
       <mesh ref={innerRef}>
         <sphereGeometry args={[0.09, 20, 20]} />
-        <meshBasicMaterial color="#2DD4BF" toneMapped={false} />
+        <meshBasicMaterial color="#FFFFFF" toneMapped={false} />
       </mesh>
     </group>
   );
@@ -190,7 +215,7 @@ function Scene() {
 
   const edgeVectors = useMemo(
     () =>
-      EDGES.map(([a, b], index) => {
+      EDGES.map(([a, b]) => {
         const start = nodeById(a);
         const end = nodeById(b);
 
@@ -198,40 +223,35 @@ function Scene() {
           id: `${a}-${b}`,
           from: new THREE.Vector3(...start.position),
           to: new THREE.Vector3(...end.position),
-          color:
-            index % 3 === 0
-              ? "#2DD4BF"
-              : index % 3 === 1
-              ? "#61DAFB"
-              : "#A78BFA",
         };
       }),
     []
   );
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     if (!networkRef.current) return;
 
-    networkRef.current.position.y =
-      Math.sin(clock.getElapsedTime() * 0.35) * 0.055;
+    const time = clock.getElapsedTime();
 
-    networkRef.current.rotation.z =
-      Math.sin(clock.getElapsedTime() * 0.16) * 0.018;
+    // Automatic movement only — no mouse/touch controls.
+    networkRef.current.rotation.y += delta * 0.08;
+    networkRef.current.rotation.z = Math.sin(time * 0.16) * 0.018;
+    networkRef.current.position.y = Math.sin(time * 0.35) * 0.055;
   });
 
   return (
     <>
-      <ambientLight intensity={0.55} />
+      <ambientLight intensity={0.65} />
 
-      <pointLight position={[4, 4, 5]} intensity={38} color="#2DD4BF" />
-      <pointLight position={[-4, -2, 3]} intensity={25} color="#6366F1" />
-      <pointLight position={[0, 0, -4]} intensity={18} color="#38BDF8" />
+      <pointLight position={[4, 4, 5]} intensity={32} color="#FFFFFF" />
+      <pointLight position={[-4, -2, 3]} intensity={18} color="#FFFFFF" />
+      <pointLight position={[0, 0, -4]} intensity={12} color="#FFFFFF" />
 
       <group ref={networkRef} scale={0.68}>
         <mesh>
           <icosahedronGeometry args={[3.0, 2]} />
           <meshBasicMaterial
-            color="#2DD4BF"
+            color="#FFFFFF"
             wireframe
             transparent
             opacity={0.025}
@@ -247,10 +267,10 @@ function Scene() {
             <Line
               key={`${a}-${b}`}
               points={[start.position, end.position]}
-              color="#495467"
+              color="#FFFFFF"
               lineWidth={0.8}
               transparent
-              opacity={0.5}
+              opacity={0.22}
               depthWrite={false}
             />
           );
@@ -263,7 +283,6 @@ function Scene() {
             to={edge.to}
             speed={0.12 + (index % 4) * 0.025}
             offset={index / edgeVectors.length}
-            color={edge.color}
           />
         ))}
 
@@ -273,24 +292,6 @@ function Scene() {
 
         <NetworkCore />
       </group>
-
-      <OrbitControls
-        makeDefault
-        enableDamping
-        dampingFactor={0.055}
-        autoRotate
-        autoRotateSpeed={0.48}
-        enableRotate
-        rotateSpeed={0.55}
-        enableZoom
-        zoomSpeed={0.6}
-        enablePan={false}
-        minDistance={7}
-        maxDistance={12.5}
-        target={[0, 0, 0]}
-        minPolarAngle={0.25}
-        maxPolarAngle={Math.PI - 0.25}
-      />
     </>
   );
 }
@@ -298,9 +299,8 @@ function Scene() {
 export default function StackNetwork() {
   return (
     <div
-      className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing"
-      style={{ touchAction: "none" }}
-      aria-label="Interactive technology network"
+      className="absolute inset-0 h-full w-full pointer-events-none"
+      aria-label="Technology network"
     >
       <Canvas
         camera={{
@@ -319,15 +319,11 @@ export default function StackNetwork() {
           gl.setClearColor(0x000000, 0);
           gl.outputColorSpace = THREE.SRGBColorSpace;
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 1.05;
+          gl.toneMappingExposure = 1.0;
         }}
       >
         <Scene />
       </Canvas>
-
-      <div className="pointer-events-none absolute bottom-7 right-7 hidden lg:flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-white/35 backdrop-blur-md">
-        drag · rotate · zoom
-      </div>
     </div>
   );
 }

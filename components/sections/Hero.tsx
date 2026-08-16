@@ -132,7 +132,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <a
+      {/* <a
         href="#skills"
         className="pointer-events-auto hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-2 text-muted hover:text-ink transition-colors"
         aria-label="Scroll to skills"
@@ -141,7 +141,7 @@ export default function Hero() {
           Scroll
         </span>
         <ArrowDown size={16} className="animate-bounce" />
-      </a>
+      </a> */}
     </section>
   );
 }

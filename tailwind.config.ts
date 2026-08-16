@@ -7,23 +7,26 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        base: "#0A0D13",
-        surface: "#10141C",
-        surface2: "#161B25",
-        border: "rgba(232,234,237,0.08)",
-        ink: "#E8EAED",
-        muted: "#7C8798",
-        teal: {
-          DEFAULT: "#f04e4e",
-          dim: "#8f2c36",
-        },
-        indigo: {
-          DEFAULT: "#6C7CFF",
-          dim: "#3D46A8",
-        },
-      },
-      fontFamily: {
+colors: {
+  base: "#07090D",
+  surface: "#0D1117",
+  surface2: "#141A22",
+
+  border: "rgba(226,232,240,0.10)",
+
+  ink: "#F1F5F9",
+  muted: "#8894A6",
+
+  teal: {
+    DEFAULT: "#22D3EE",
+    dim: "#0E7490",
+  },
+
+  indigo: {
+    DEFAULT: "#60A5FA",
+    dim: "#2563EB",
+  },
+},      fontFamily: {
         display: ["var(--font-space-grotesk)", "sans-serif"],
         body: ["var(--font-inter)", "sans-serif"],
         mono: ["var(--font-jetbrains)", "monospace"],

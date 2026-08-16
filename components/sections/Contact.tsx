@@ -127,7 +127,7 @@ export default function Contact() {
         <div
           className="
             grid
-            lg:grid-cols-[1fr_1.1fr]
+lg:grid-cols-[1fr_460px]
             gap-12
             lg:gap-16
             items-start
@@ -304,22 +304,24 @@ export default function Contact() {
               delay: 0.08,
             }}
             onSubmit={handleSubmit}
-            className="
-              relative
-              overflow-hidden
-              rounded-2xl
-              border
-              border-border
-              bg-surface/80
-              backdrop-blur-xl
-              p-6
-              md:p-8
-              flex
-              flex-col
-              gap-5
-              shadow-[0_20px_70px_rgba(0,0,0,0.25)]
-            "
-          >
+className="
+  relative
+  w-full
+  lg:justify-self-end
+
+  overflow-hidden
+  rounded-2xl
+  border
+  border-border
+  bg-surface/80
+  backdrop-blur-xl
+  p-6
+  md:p-7
+  flex
+  flex-col
+  gap-5
+  shadow-[0_20px_70px_rgba(0,0,0,0.25)]
+"          >
             {/* subtle teal glow */}
             <div
               className="
@@ -549,7 +551,6 @@ export default function Contact() {
             )}
           </motion.form>
         </div>
-
         {/* =========================================
             FOOTER
         ========================================== */}
@@ -557,7 +558,6 @@ export default function Contact() {
           className="
             mt-24
             pt-8
-            border-t
             border-border
             flex
             items-center
@@ -569,11 +569,11 @@ export default function Contact() {
           "
         >
           <span>
-            Built with 💛💛 by{" "}
+            Developed by{" "}
             <span className="text-teal">
               {profile.name}
             </span>
-            .
+            ....
           </span>
         </div>
       </div>

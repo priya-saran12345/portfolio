@@ -20,11 +20,6 @@ import {
   X,
 } from "lucide-react";
 
-type MonkeyMessage =
-  | "Hi 👋"
-  | "Bye bye 👋"
-  | "";
-
 type NavItem = {
   label: string;
   href: string;
@@ -59,225 +54,6 @@ const navbarLinks: NavItem[] = [
   ),
 ];
 
-function MiniMonkey({
-  message,
-}: {
-  message: MonkeyMessage;
-}) {
-  if (!message) return null;
-
-  return (
-    <div
-      className="
-        pointer-events-none
-        absolute
-        left-1/2
-        top-full
-        z-[70]
-        mt-2
-        -translate-x-1/2
-        animate-[monkeyPop_.28s_ease-out]
-      "
-    >
-      <div className="flex flex-col items-center">
-        {/* speech bubble */}
-        <div
-          className="
-            relative
-            whitespace-nowrap
-            rounded-full
-            border
-            border-teal/30
-            bg-base/95
-            px-2.5
-            py-1
-            font-mono
-            text-[10px]
-            font-semibold
-            text-teal
-            shadow-[0_0_12px_rgba(45,212,191,0.18)]
-            backdrop-blur-md
-          "
-        >
-          {message}
-
-          <span
-            className="
-              absolute
-              left-1/2
-              top-full
-              h-1.5
-              w-1.5
-              -translate-x-1/2
-              -translate-y-1
-              rotate-45
-              border-b
-              border-r
-              border-teal/30
-              bg-base
-            "
-          />
-        </div>
-
-        {/* monkey */}
-        <div
-          className="
-            relative
-            mt-1
-            h-9
-            w-9
-            animate-[monkeyBob_.55s_ease-in-out_infinite_alternate]
-          "
-        >
-          <svg
-            viewBox="0 0 100 100"
-            className="
-              h-full
-              w-full
-              drop-shadow-[0_4px_5px_rgba(0,0,0,0.35)]
-            "
-            aria-hidden="true"
-          >
-            <circle
-              cx="17"
-              cy="47"
-              r="14"
-              fill="#8b4f2b"
-            />
-
-            <circle
-              cx="83"
-              cy="47"
-              r="14"
-              fill="#8b4f2b"
-            />
-
-            <circle
-              cx="17"
-              cy="47"
-              r="8"
-              fill="#e8b27c"
-            />
-
-            <circle
-              cx="83"
-              cy="47"
-              r="8"
-              fill="#e8b27c"
-            />
-
-            <circle
-              cx="50"
-              cy="45"
-              r="35"
-              fill="#8b4f2b"
-            />
-
-            <ellipse
-              cx="50"
-              cy="56"
-              rx="27"
-              ry="24"
-              fill="#f1c18c"
-            />
-
-            <ellipse
-              cx="39"
-              cy="42"
-              rx="13"
-              ry="15"
-              fill="#f1c18c"
-            />
-
-            <ellipse
-              cx="61"
-              cy="42"
-              rx="13"
-              ry="15"
-              fill="#f1c18c"
-            />
-
-            <circle
-              cx="39"
-              cy="44"
-              r="3.4"
-              fill="#1f1712"
-            />
-
-            <circle
-              cx="61"
-              cy="44"
-              r="3.4"
-              fill="#1f1712"
-            />
-
-            <circle
-              cx="40"
-              cy="43"
-              r="1"
-              fill="#ffffff"
-            />
-
-            <circle
-              cx="62"
-              cy="43"
-              r="1"
-              fill="#ffffff"
-            />
-
-            <ellipse
-              cx="50"
-              cy="56"
-              rx="4"
-              ry="3"
-              fill="#6e3d24"
-            />
-
-            <path
-              d="M40 64 Q50 72 60 64"
-              fill="none"
-              stroke="#6e3d24"
-              strokeWidth="2.6"
-              strokeLinecap="round"
-            />
-          </svg>
-
-          {/* waving hand */}
-          <span
-            className="
-              absolute
-              -right-2
-              top-0
-              origin-bottom-left
-              text-[16px]
-              leading-none
-              animate-[monkeyWave_.3s_ease-in-out_infinite_alternate]
-            "
-          >
-            👋
-          </span>
-
-          {/* glow */}
-          <span
-            className="
-              absolute
-              -bottom-1
-              left-1/2
-              -z-10
-              h-2
-              w-7
-              -translate-x-1/2
-              rounded-full
-              bg-teal/25
-              blur-sm
-            "
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Navbar() {
   const router =
     useRouter();
@@ -307,82 +83,11 @@ export default function Navbar() {
       : "#top"
   );
 
-  const [
-    monkeyHref,
-    setMonkeyHref,
-  ] = useState("");
-
-  const [
-    monkeyMessage,
-    setMonkeyMessage,
-  ] =
-    useState<MonkeyMessage>("");
 
   const navigationTargetRef =
     useRef<string | null>(
       null
     );
-
-  const greetingTimerRef =
-    useRef<ReturnType<
-      typeof setTimeout
-    > | null>(null);
-
-  const leaveTimerRef =
-    useRef<ReturnType<
-      typeof setTimeout
-    > | null>(null);
-
-  /* =========================================
-     MONKEY HELPERS
-  ========================================== */
-
-  const clearMonkeyTimers =
-    () => {
-      if (
-        greetingTimerRef.current
-      ) {
-        clearTimeout(
-          greetingTimerRef.current
-        );
-
-        greetingTimerRef.current =
-          null;
-      }
-
-      if (
-        leaveTimerRef.current
-      ) {
-        clearTimeout(
-          leaveTimerRef.current
-        );
-
-        leaveTimerRef.current =
-          null;
-      }
-    };
-
-  const showMonkey = (
-    href: string,
-    message: MonkeyMessage,
-    duration = 1000
-  ) => {
-    if (
-      greetingTimerRef.current
-    ) {
-      clearTimeout(
-        greetingTimerRef.current
-      );
-    }
-
-    setMonkeyHref(href);
-    setMonkeyMessage(message);
-
-    greetingTimerRef.current =
-      setTimeout(() => {
-        setMonkeyMessage("");
-      }, duration);
-  };
 
   /* =========================================
      BUILD THE REAL URL
@@ -479,22 +184,7 @@ export default function Navbar() {
         navigationTargetRef.current ===
           null
       ) {
-        setActiveHref(
-          (previous) => {
-            if (
-              previous !==
-              "#top"
-            ) {
-              showMonkey(
-                "#top",
-                "Hi 👋",
-                900
-              );
-            }
-
-            return "#top";
-          }
-        );
+        setActiveHref("#top");
       }
     };
 
@@ -571,49 +261,13 @@ export default function Navbar() {
             return;
           }
 
-          setActiveHref(
-            (previous) => {
-              if (
-                previous === href
-              ) {
-                return previous;
-              }
+          if (
+            navigationTargetRef.current === href
+          ) {
+            navigationTargetRef.current = null;
+          }
 
-              /*
-               * Navbar click in progress:
-               * greet only when the intended
-               * section has actually arrived.
-               */
-              if (
-                navigationTargetRef.current
-              ) {
-                if (
-                  navigationTargetRef.current ===
-                  href
-                ) {
-                  navigationTargetRef.current =
-                    null;
-
-                  showMonkey(
-                    href,
-                    "Hi 👋",
-                    1250
-                  );
-                }
-              } else {
-                /*
-                 * Manual scrolling.
-                 */
-                showMonkey(
-                  href,
-                  "Hi 👋",
-                  900
-                );
-              }
-
-              return href;
-            }
-          );
+          setActiveHref(href);
         },
         {
           root: null,
@@ -671,15 +325,6 @@ export default function Navbar() {
     };
   }, [isHomePage]);
 
-  /* =========================================
-     CLEANUP
-  ========================================== */
-
-  useEffect(() => {
-    return () => {
-      clearMonkeyTimers();
-    };
-  }, []);
 
   /* =========================================
      NAVIGATE
@@ -702,9 +347,7 @@ export default function Navbar() {
     href: string
   ) => {
     event.preventDefault();
-
     setOpen(false);
-    clearMonkeyTimers();
 
     /*
      * Already on the same standalone page.
@@ -713,15 +356,7 @@ export default function Navbar() {
       href === "/github" &&
       pathname === "/github"
     ) {
-      setActiveHref(
-        "/github"
-      );
-
-      showMonkey(
-        "/github",
-        "Hi 👋",
-        900
-      );
+      setActiveHref("/github");
 
       window.scrollTo({
         top: 0,
@@ -731,101 +366,58 @@ export default function Navbar() {
       return;
     }
 
-    const leavingHref =
-      activeHref || href;
-
-    setMonkeyHref(
-      leavingHref
-    );
-
-    setMonkeyMessage(
-      "Bye bye 👋"
-    );
-
     /*
-     * Keep target so the Home IntersectionObserver
-     * can greet once the destination section arrives.
+     * HOME SECTION
      */
-    navigationTargetRef.current =
-      href.startsWith("#")
-        ? href
-        : null;
+    if (href.startsWith("#")) {
+      navigationTargetRef.current = href;
 
-    leaveTimerRef.current =
-      setTimeout(() => {
-        setMonkeyMessage("");
+      /*
+       * Already on Home:
+       * smooth-scroll without a page change.
+       */
+      if (isHomePage) {
+        const target =
+          document.querySelector(href);
 
-        /* =====================================
-           HOME SECTION
-        ====================================== */
+        if (target) {
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
 
-        if (
-          href.startsWith(
-            "#"
-          )
-        ) {
-          /*
-           * Already on Home:
-           * smooth-scroll without a page change.
-           */
-          if (isHomePage) {
-            const target =
-              document.querySelector(
-                href
-              );
-
-            if (target) {
-              target.scrollIntoView(
-                {
-                  behavior:
-                    "smooth",
-                  block: "start",
-                }
-              );
-
-              window.history.pushState(
-                null,
-                "",
-                href
-              );
-
-              return;
-            }
-          }
-
-          /*
-           * We are on /github.
-           * Go back to the homepage AND the
-           * requested section.
-           *
-           * Example:
-           * /github -> /#experience
-           */
-          router.push(
-            `/${href}`
+          window.history.pushState(
+            null,
+            "",
+            href
           );
 
           return;
         }
+      }
 
-        /* =====================================
-           INTERNAL NEXT.JS PAGE
-        ====================================== */
+      /*
+       * From another page, return to Home
+       * and open the requested section.
+       */
+      router.push(`/${href}`);
+      return;
+    }
 
-        if (
-          href.startsWith("/")
-        ) {
-          router.push(href);
-          return;
-        }
+    /*
+     * INTERNAL NEXT.JS PAGE
+     */
+    if (href.startsWith("/")) {
+      navigationTargetRef.current = null;
+      router.push(href);
+      return;
+    }
 
-        /* =====================================
-           EXTERNAL FALLBACK
-        ====================================== */
-
-        window.location.href =
-          href;
-      }, 520);
+    /*
+     * EXTERNAL FALLBACK
+     */
+    navigationTargetRef.current = null;
+    window.location.href = href;
   };
 
   return (
@@ -905,12 +497,6 @@ export default function Navbar() {
                   activeHref ===
                   link.href;
 
-                const showMonkeyHere =
-                  monkeyHref ===
-                    link.href &&
-                  Boolean(
-                    monkeyMessage
-                  );
 
                 const browserHref =
                   resolveHref(
@@ -1017,14 +603,6 @@ export default function Navbar() {
                           "
                         />
                       </span>
-
-                      {showMonkeyHere && (
-                        <MiniMonkey
-                          message={
-                            monkeyMessage
-                          }
-                        />
-                      )}
                     </a>
                   </li>
                 );
@@ -1311,69 +889,6 @@ export default function Navbar() {
         )}
       </header>
 
-      {/* =========================================
-          MONKEY ANIMATIONS
-      ========================================== */}
-
-      <style jsx global>{`
-        @keyframes monkeyWave {
-          from {
-            transform: rotate(
-              -18deg
-            );
-          }
-
-          to {
-            transform: rotate(
-              22deg
-            );
-          }
-        }
-
-        @keyframes monkeyBob {
-          from {
-            transform: translateY(
-                0
-              )
-              rotate(-1deg);
-          }
-
-          to {
-            transform: translateY(
-                -3px
-              )
-              rotate(1deg);
-          }
-        }
-
-        @keyframes monkeyPop {
-          from {
-            opacity: 0;
-            transform: translate(
-                -50%,
-                -4px
-              )
-              scale(0.75);
-          }
-
-          to {
-            opacity: 1;
-            transform: translate(
-                -50%,
-                0
-              )
-              scale(1);
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .animate-\\[monkeyWave_\\.3s_ease-in-out_infinite_alternate\\],
-          .animate-\\[monkeyBob_\\.55s_ease-in-out_infinite_alternate\\],
-          .animate-\\[monkeyPop_\\.28s_ease-out\\] {
-            animation: none !important;
-          }
-        }
-      `}</style>
     </>
   );
 }
