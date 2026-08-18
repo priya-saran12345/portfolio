@@ -17,7 +17,6 @@ export default function Experience() {
         relative
         isolate
         overflow-hidden
-        border-t
         border-border
         py-14
         md:py-22

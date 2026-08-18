@@ -8,6 +8,8 @@ import {
   Loader2,
   CheckCircle2,
   AlertCircle,
+  ArrowUpRight,
+  Send,
 } from "lucide-react";
 
 import { profile } from "@/lib/data";
@@ -91,492 +93,1268 @@ export default function Contact() {
     }
   }
 
-  return (
-    <section
-      id="contact"
+return (
+  <section
+    id="contact"
+    className="
+      relative
+      isolate
+      overflow-hidden
+      border-border
+      pt-16
+      md:pt-24
+      pb-6
+      md:pb-10
+    "
+  >
+    {/* THREE BACKGROUND */}
+    <SpotlightBackground />
+
+    {/* ========================================= */}
+    {/* BACKGROUND GRID */}
+    {/* ========================================= */}
+
+    <div
+      className="absolute inset-0 pointer-events-none opacity-60"
+      style={{
+        backgroundImage: `
+          linear-gradient(
+            rgba(255,255,255,0.035) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            90deg,
+            rgba(255,255,255,0.035) 1px,
+            transparent 1px
+          )
+        `,
+        backgroundSize: "50px 50px",
+      }}
+    />
+
+    {/* LARGE BACKGROUND TEXT */}
+
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 1.2 }}
       className="
-        relative
-        isolate
-        overflow-hidden
-        border-t
-        border-border
-        pt-12
-        md:pt-20
-        pb-4 md:pb-8
+        absolute
+        top-[5%]
+        left-1/2
+        -translate-x-1/2
+
+        whitespace-nowrap
+
+        font-display
+        font-black
+
+        text-[90px]
+        sm:text-[140px]
+        md:text-[200px]
+        lg:text-[260px]
+
+        leading-none
+        tracking-[-0.06em]
+
+        text-white/[0.018]
+
+        select-none
+        pointer-events-none
       "
     >
-      {/* =========================================
-          THREE.JS SPOTLIGHT BACKGROUND
-      ========================================== */}
-      <SpotlightBackground />
+      LET&apos;S TALK
+    </motion.div>
 
-      {/* =========================================
-          CONTACT CONTENT
-          z-10 keeps everything above Three.js
-      ========================================== */}
+    {/* LEFT GLOW */}
+
+    <motion.div
+      className="
+        absolute
+        left-[-180px]
+        top-[30%]
+
+        w-[450px]
+        h-[450px]
+
+        rounded-full
+
+        bg-teal/[0.05]
+        blur-[120px]
+
+        pointer-events-none
+      "
+      animate={{
+        scale: [1, 1.15, 1],
+        opacity: [0.3, 0.7, 0.3],
+      }}
+      transition={{
+        duration: 7,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    />
+
+    {/* RIGHT GLOW */}
+
+    <motion.div
+      className="
+        absolute
+        right-[-150px]
+        bottom-[5%]
+
+        w-[400px]
+        h-[400px]
+
+        rounded-full
+
+        bg-indigo/[0.05]
+        blur-[130px]
+
+        pointer-events-none
+      "
+      animate={{
+        y: [-25, 25, -25],
+      }}
+      transition={{
+        duration: 9,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    />
+
+    {/* ========================================= */}
+    {/* CONTENT */}
+    {/* ========================================= */}
+
+    <div
+      className="
+        relative
+        z-10
+
+        max-w-[90%]
+        xl:w-[94%]
+
+        mx-auto
+        px-4
+        sm:px-6
+      "
+    >
       <div
         className="
-          relative
-          z-10
-          max-w-[90%]
-          xl:w-[98%]
-          mx-auto
-          px-6
+          grid
+          lg:grid-cols-[1fr_480px]
+          gap-14
+          lg:gap-20
+          items-center
         "
       >
-        <div
-          className="
-            grid
-lg:grid-cols-[1fr_460px]
-            gap-12
-            lg:gap-16
-            items-start
-          "
+        {/* ========================================= */}
+        {/* LEFT */}
+        {/* ========================================= */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            x: -40,
+          }}
+          whileInView={{
+            opacity: 1,
+            x: 0,
+          }}
+          viewport={{
+            once: true,
+            margin: "-80px",
+          }}
+          transition={{
+            duration: 0.7,
+            ease: [0.16, 1, 0.3, 1],
+          }}
         >
-          {/* =====================================
-              LEFT SIDE
-          ====================================== */}
+          {/* AVAILABILITY */}
+
           <motion.div
             initial={{
               opacity: 0,
-              x: -30,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-            }}
-            viewport={{
-              once: true,
-              margin: "-80px",
-            }}
-            transition={{
-              duration: 0.55,
-            }}
-          >
-            <p className="section-label mb-3">
-              05 — Get in touch
-            </p>
-
-            <h2
-              className="
-                font-display
-                text-3xl
-                md:text-5xl
-                font-semibold
-                text-ink
-                mb-6
-              "
-            >
-              Let&apos;s build
-              <br />
-              <span className="text-teal">
-                something.
-              </span>
-            </h2>
-
-            <p
-              className="
-                text-muted
-                max-w-sm
-                leading-relaxed
-                mb-10
-              "
-            >
-              Have a product, dashboard, or site
-              that needs a full-stack developer?
-              I&apos;m currently open to new roles
-              and freelance projects — reach out
-              below.
-            </p>
-
-            {/* Contact links */}
-            <div className="flex flex-col gap-4">
-              {/* EMAIL */}
-              <a
-                href={`mailto:${profile.email}`}
-                className="
-                  group
-                  inline-flex
-                  items-center
-                  gap-3
-                  w-fit
-                  text-sm
-                  text-ink/85
-                  hover:text-teal
-                  transition-colors
-                "
-              >
-                <span
-                  className="
-                    flex
-                    h-9
-                    w-9
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-teal/30
-                    bg-teal/10
-                    transition-all
-                    duration-300
-                    group-hover:border-teal/60
-                    group-hover:bg-teal/15
-                    group-hover:shadow-[0_0_18px_rgba(45,212,191,0.18)]
-                  "
-                >
-                  <Mail
-                    size={16}
-                    className="text-teal"
-                  />
-                </span>
-
-                {profile.email}
-              </a>
-
-              {/* LINKEDIN */}
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  group
-                  inline-flex
-                  items-center
-                  gap-3
-                  w-fit
-                  text-sm
-                  text-ink/85
-                  hover:text-teal
-                  transition-colors
-                "
-              >
-                <span
-                  className="
-                    flex
-                    h-9
-                    w-9
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-teal/30
-                    bg-teal/10
-                    transition-all
-                    duration-300
-                    group-hover:border-teal/60
-                    group-hover:bg-teal/15
-                    group-hover:shadow-[0_0_18px_rgba(45,212,191,0.18)]
-                  "
-                >
-                  <Linkedin
-                    size={16}
-                    className="text-teal"
-                  />
-                </span>
-
-                linkedin.com/in/priya-saran
-              </a>
-            </div>
-            <div className="mt-3">
-
-            {/* <FooterIconPage/> */}
-            </div>
-          </motion.div>
-
-          {/* =====================================
-              CONTACT FORM
-          ====================================== */}
-          <motion.form
-            initial={{
-              opacity: 0,
-              y: 30,
+              y: 10,
             }}
             whileInView={{
               opacity: 1,
               y: 0,
             }}
-            viewport={{
-              once: true,
-              margin: "-80px",
+            viewport={{ once: true }}
+            transition={{
+              delay: 0.15,
+            }}
+            className="
+              inline-flex
+              items-center
+              gap-3
+
+              border
+              border-white/[0.08]
+
+              bg-surface/60
+              backdrop-blur-md
+
+              rounded-full
+
+              px-4
+              py-2
+
+              mb-7
+            "
+          >
+            <span className="relative flex h-2 w-2">
+              <motion.span
+                className="
+                  absolute
+                  inline-flex
+                  h-full
+                  w-full
+                  rounded-full
+                  bg-teal
+                "
+                animate={{
+                  scale: [1, 2, 1],
+                  opacity: [0.7, 0, 0.7],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+              />
+
+              <span
+                className="
+                  relative
+                  inline-flex
+                  rounded-full
+                  h-2
+                  w-2
+                  bg-teal
+                "
+              />
+            </span>
+
+            <span
+              className="
+                font-mono
+                text-[9px]
+                sm:text-[10px]
+                uppercase
+                tracking-[0.22em]
+                text-muted
+              "
+            >
+              Available for selected projects
+            </span>
+          </motion.div>
+
+          {/* SECTION LABEL */}
+
+          <p className="section-label mb-4">
+            05 — Get in touch
+          </p>
+
+          {/* HEADING */}
+
+          <h2
+            className="
+              font-display
+
+              text-[22px]
+              sm:text-3xl
+              md:text-4xl
+              lg:text-[52px]
+
+              leading-1
+
+              font-semibold
+              tracking-[-0.04em]
+
+              text-ink
+
+              mb-7
+            "
+          >
+            Have an idea?
+            <br />
+
+            <span
+              className="
+                relative
+                mt-2
+                inline-block
+                text-teal
+              "
+            >
+              Let&apos;s build it.
+
+              <motion.span
+                initial={{ width: 0 }}
+                whileInView={{ width: "100%" }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.4,
+                }}
+                className="
+                  absolute
+                  left-0
+                  -bottom-2
+
+                  h-px
+
+                  bg-gradient-to-r
+                  from-teal
+                  via-teal/60
+                  to-transparent
+                "
+              />
+            </span>
+          </h2>
+
+          {/* DESCRIPTION */}
+
+          <p
+            className="
+              max-w-md
+
+              text-sm
+              md:text-[15px]
+
+              text-muted
+
+              leading-7
+
+              mb-10
+            "
+          >
+            Have a product, dashboard, platform or digital experience
+            in mind? Tell me what you&apos;re building and let&apos;s turn
+            the idea into something people enjoy using.
+          </p>
+
+          {/* ========================================= */}
+          {/* CONTACT OPTIONS */}
+          {/* ========================================= */}
+
+          <div
+            className="
+              flex
+              flex-col
+              sm:flex-row
+              gap-3
+            "
+          >
+            {/* EMAIL */}
+
+            <motion.a
+              href={`mailto:${profile.email}`}
+              whileHover={{
+                y: -4,
+              }}
+              transition={{
+                duration: 0.2,
+              }}
+              className="
+                group
+
+                relative
+                overflow-hidden
+
+                flex
+                items-center
+                gap-4
+
+                border
+                border-white/[0.08]
+
+                bg-surface/60
+                backdrop-blur-lg
+
+                rounded-xl
+
+                px-4
+                py-3.5
+
+                transition-all
+                duration-300
+
+                hover:border-teal/30
+                hover:bg-surface
+              "
+            >
+              <div
+                className="
+                  flex
+                  items-center
+                  justify-center
+
+                  w-10
+                  h-10
+
+                  rounded-lg
+
+                  bg-teal/10
+
+                  border
+                  border-teal/20
+
+                  transition-all
+                  duration-300
+
+                  group-hover:bg-teal/15
+                  group-hover:border-teal/40
+                "
+              >
+                <Mail
+                  size={17}
+                  className="text-teal"
+                />
+              </div>
+
+              <div>
+                <span
+                  className="
+                    block
+
+                    font-mono
+                    text-[9px]
+                    uppercase
+                    tracking-[0.18em]
+
+                    text-muted
+
+                    mb-1
+                  "
+                >
+                  Email
+                </span>
+
+                <span
+                  className="
+                    text-xs
+                    sm:text-sm
+                    text-ink
+                  "
+                >
+                  {profile.email}
+                </span>
+              </div>
+
+              <ArrowUpRight
+                size={15}
+                className="
+                  ml-auto
+                  text-muted
+
+                  transition-all
+                  duration-300
+
+                  group-hover:text-teal
+                  group-hover:translate-x-0.5
+                  group-hover:-translate-y-0.5
+                "
+              />
+            </motion.a>
+
+            {/* LINKEDIN */}
+
+            <motion.a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{
+                y: -4,
+              }}
+              transition={{
+                duration: 0.2,
+              }}
+              className="
+                group
+
+                relative
+                overflow-hidden
+
+                flex
+                items-center
+                gap-4
+
+                border
+                border-white/[0.08]
+
+                bg-surface/60
+                backdrop-blur-lg
+
+                rounded-xl
+
+                px-4
+                py-3.5
+
+                transition-all
+                duration-300
+
+                hover:border-teal/30
+                hover:bg-surface
+              "
+            >
+              <div
+                className="
+                  flex
+                  items-center
+                  justify-center
+
+                  w-10
+                  h-10
+
+                  rounded-lg
+
+                  bg-teal/10
+
+                  border
+                  border-teal/20
+
+                  transition-all
+                  duration-300
+
+                  group-hover:bg-teal/15
+                  group-hover:border-teal/40
+                "
+              >
+                <Linkedin
+                  size={17}
+                  className="text-teal"
+                />
+              </div>
+
+              <div>
+                <span
+                  className="
+                    block
+
+                    font-mono
+                    text-[9px]
+                    uppercase
+                    tracking-[0.18em]
+
+                    text-muted
+
+                    mb-1
+                  "
+                >
+                  LinkedIn
+                </span>
+
+                <span
+                  className="
+                    text-xs
+                    sm:text-sm
+                    text-ink
+                  "
+                >
+                  Connect with me
+                </span>
+              </div>
+
+              <ArrowUpRight
+                size={15}
+                className="
+                  ml-auto
+                  text-muted
+
+                  transition-all
+                  duration-300
+
+                  group-hover:text-teal
+                  group-hover:translate-x-0.5
+                  group-hover:-translate-y-0.5
+                "
+              />
+            </motion.a>
+          </div>
+        </motion.div>
+
+        {/* ========================================= */}
+        {/* FORM */}
+        {/* ========================================= */}
+
+        <motion.form
+          initial={{
+            opacity: 0,
+            y: 40,
+            scale: 0.97,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+            scale: 1,
+          }}
+          viewport={{
+            once: true,
+            margin: "-80px",
+          }}
+          transition={{
+            duration: 0.7,
+            delay: 0.1,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          onSubmit={handleSubmit}
+          className="
+            group/form
+
+            relative
+
+            w-full
+            lg:justify-self-end
+
+            overflow-hidden
+
+            rounded-2xl
+
+            border
+            border-white/[0.08]
+
+            bg-surface/90
+
+            backdrop-blur-2xl
+
+            p-6
+            sm:p-7
+            md:p-8
+
+            shadow-[0_30px_100px_rgba(0,0,0,0.35)]
+          "
+        >
+          {/* FORM GRID */}
+
+          <div
+            className="
+              absolute
+              inset-0
+
+              pointer-events-none
+
+              opacity-40
+            "
+            style={{
+              backgroundImage: `
+                linear-gradient(
+                  rgba(255,255,255,0.025) 1px,
+                  transparent 1px
+                ),
+                linear-gradient(
+                  90deg,
+                  rgba(255,255,255,0.025) 1px,
+                  transparent 1px
+                )
+              `,
+              backgroundSize: "32px 32px",
+            }}
+          />
+
+          {/* MOVING GLOW */}
+
+          <motion.div
+            className="
+              absolute
+              -top-28
+              -right-28
+
+              h-64
+              w-64
+
+              rounded-full
+
+              bg-teal/10
+
+              blur-[80px]
+
+              pointer-events-none
+            "
+            animate={{
+              x: [-20, 20, -20],
+              y: [-10, 20, -10],
             }}
             transition={{
-              duration: 0.55,
-              delay: 0.08,
+              duration: 7,
+              repeat: Infinity,
+              ease: "easeInOut",
             }}
-            onSubmit={handleSubmit}
-className="
-  relative
-  w-full
-  lg:justify-self-end
+          />
 
-  overflow-hidden
-  rounded-2xl
-  border
-  border-border
-  bg-surface/80
-  backdrop-blur-xl
-  p-6
-  md:p-7
-  flex
-  flex-col
-  gap-5
-  shadow-[0_20px_70px_rgba(0,0,0,0.25)]
-"          >
-            {/* subtle teal glow */}
+          {/* TOP SCAN LINE */}
+
+          <motion.div
+            className="
+              absolute
+              top-0
+              left-0
+
+              h-px
+              w-[45%]
+
+              bg-gradient-to-r
+              from-transparent
+              via-teal
+              to-transparent
+
+              pointer-events-none
+            "
+            animate={{
+              x: ["-100%", "320%"],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "linear",
+              repeatDelay: 1,
+            }}
+          />
+
+          {/* CORNERS */}
+
+          <div
+            className="
+              absolute
+              left-3
+              top-3
+              w-4
+              h-4
+
+              border-l
+              border-t
+              border-teal/50
+
+              pointer-events-none
+            "
+          />
+
+          <div
+            className="
+              absolute
+              right-3
+              bottom-3
+              w-4
+              h-4
+
+              border-r
+              border-b
+              border-teal/50
+
+              pointer-events-none
+            "
+          />
+
+          {/* FORM HEADER */}
+
+          <div
+            className="
+              relative
+              z-10
+
+              flex
+              items-center
+              justify-between
+
+              mb-7
+            "
+          >
+            <div>
+              <p
+                className="
+                  font-mono
+
+                  text-[9px]
+
+                  text-muted
+
+                  uppercase
+                  tracking-[0.22em]
+
+                  mb-1
+                "
+              >
+                Start a conversation
+              </p>
+
+              <h3
+                className="
+                  text-lg
+                  font-semibold
+                  text-ink
+                "
+              >
+                Tell me about your project
+              </h3>
+            </div>
+
             <div
               className="
-                pointer-events-none
-                absolute
-                -top-24
-                -right-24
-                h-52
-                w-52
-                rounded-full
-                bg-teal/10
-                blur-3xl
-              "
-            />
+                w-9
+                h-9
 
-            {/* NAME */}
-            <div className="relative flex flex-col gap-2">
+                flex
+                items-center
+                justify-center
+
+                rounded-full
+
+                border
+                border-white/[0.08]
+
+                text-muted
+              "
+            >
+              <Send size={15} />
+            </div>
+          </div>
+
+          {/* ========================================= */}
+          {/* NAME */}
+          {/* ========================================= */}
+
+          <div className="relative z-10 mb-5">
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                mb-2
+              "
+            >
               <label
                 htmlFor="name"
                 className="
-                  text-xs
-                  font-mono 
+                  font-mono
+                  text-[10px]
+
                   uppercase
-                  tracking-widest
+                  tracking-[0.2em]
+
                   text-muted
                 "
               >
                 Name
               </label>
 
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                autoComplete="name"
-                placeholder="Your name"
+              <span
                 className="
-                  bg-base/80
-                  border
-                  border-border
-                  rounded-lg
-                  px-4
-                  py-3
-                  text-sm
-                  text-ink
-                  placeholder:text-muted/60
-                  focus:border-teal/60
-                  focus:ring-1
-                  focus:ring-teal/20
-                  outline-none
-                  transition-all
+                  font-mono
+                  text-[9px]
+                  text-white/20
                 "
-              />
+              >
+                01
+              </span>
             </div>
 
-            {/* EMAIL */}
-            <div className="relative flex flex-col gap-2">
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              autoComplete="name"
+              placeholder="Your name"
+              className="
+                w-full
+
+                bg-base/70
+
+                border
+                border-white/[0.07]
+
+                rounded-xl
+
+                px-4
+                py-3.5
+
+                text-sm
+                text-ink
+
+                placeholder:text-muted/50
+
+                outline-none
+
+                transition-all
+                duration-300
+
+                hover:border-white/[0.13]
+
+                focus:border-teal/50
+                focus:bg-base
+                focus:ring-1
+                focus:ring-teal/10
+              "
+            />
+          </div>
+
+          {/* ========================================= */}
+          {/* EMAIL */}
+          {/* ========================================= */}
+
+          <div className="relative z-10 mb-5">
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                mb-2
+              "
+            >
               <label
                 htmlFor="email"
                 className="
-                  text-xs
                   font-mono
+                  text-[10px]
+
                   uppercase
-                  tracking-widest
+                  tracking-[0.2em]
+
                   text-muted
                 "
               >
                 Email
               </label>
 
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="you@company.com"
+              <span
                 className="
-                  bg-base/80
-                  border
-                  border-border
-                  rounded-lg
-                  px-4
-                  py-3
-                  text-sm
-                  text-ink
-                  placeholder:text-muted/60
-                  focus:border-teal/60
-                  focus:ring-1
-                  focus:ring-teal/20
-                  outline-none
-                  transition-all
+                  font-mono
+                  text-[9px]
+                  text-white/20
                 "
-              />
+              >
+                02
+              </span>
             </div>
 
-            {/* MESSAGE */}
-            <div className="relative flex flex-col gap-2">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="you@company.com"
+              className="
+                w-full
+
+                bg-base/70
+
+                border
+                border-white/[0.07]
+
+                rounded-xl
+
+                px-4
+                py-3.5
+
+                text-sm
+                text-ink
+
+                placeholder:text-muted/50
+
+                outline-none
+
+                transition-all
+                duration-300
+
+                hover:border-white/[0.13]
+
+                focus:border-teal/50
+                focus:bg-base
+                focus:ring-1
+                focus:ring-teal/10
+              "
+            />
+          </div>
+
+          {/* ========================================= */}
+          {/* MESSAGE */}
+          {/* ========================================= */}
+
+          <div className="relative z-10 mb-6">
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                mb-2
+              "
+            >
               <label
                 htmlFor="message"
                 className="
-                  text-xs
                   font-mono
+                  text-[10px]
+
                   uppercase
-                  tracking-widest
+                  tracking-[0.2em]
+
                   text-muted
                 "
               >
                 Message
               </label>
 
-              <textarea
-                id="message"
-                name="message"
-                required
-                rows={5}
-                placeholder="Tell me about your project..."
+              <span
                 className="
-                  bg-base/80
-                  border
-                  border-border
-                  rounded-lg
-                  px-4
-                  py-3
-                  text-sm
-                  text-ink
-                  placeholder:text-muted/60
-                  focus:border-teal/60
-                  focus:ring-1
-                  focus:ring-teal/20
-                  outline-none
-                  transition-all
-                  resize-none
+                  font-mono
+                  text-[9px]
+                  text-white/20
                 "
-              />
+              >
+                03
+              </span>
             </div>
 
-            {/* SUBMIT */}
-            <button
-              type="submit"
-              disabled={status === "sending"}
+            <textarea
+              id="message"
+              name="message"
+              required
+              rows={5}
+              placeholder="Tell me about your project..."
               className="
-                relative
-                mt-2
-                inline-flex
-                items-center
-                justify-center
-                gap-2
-                overflow-hidden
-                bg-teal
-                text-base
-                font-semibold
-                text-sm
-                px-6
+                w-full
+
+                bg-base/70
+
+                border
+                border-white/[0.07]
+
+                rounded-xl
+
+                px-4
                 py-3.5
-                rounded-lg
-                hover:bg-teal/90
-                hover:shadow-[0_0_24px_rgba(45,212,191,0.25)]
+
+                text-sm
+                text-ink
+
+                placeholder:text-muted/50
+
+                outline-none
+                resize-none
+
                 transition-all
                 duration-300
-                disabled:opacity-60
-                disabled:cursor-not-allowed
+
+                hover:border-white/[0.13]
+
+                focus:border-teal/50
+                focus:bg-base
+                focus:ring-1
+                focus:ring-teal/10
               "
-            >
-              {status === "sending" && (
+            />
+          </div>
+
+          {/* ========================================= */}
+          {/* BUTTON */}
+          {/* ========================================= */}
+
+          <motion.button
+            type="submit"
+            disabled={status === "sending"}
+            whileHover={
+              status !== "sending"
+                ? {
+                    scale: 1.015,
+                  }
+                : {}
+            }
+            whileTap={
+              status !== "sending"
+                ? {
+                    scale: 0.985,
+                  }
+                : {}
+            }
+            className="
+              group/button
+
+              relative
+              z-10
+
+              w-full
+
+              overflow-hidden
+
+              inline-flex
+              items-center
+              justify-center
+
+              gap-2
+
+              bg-teal
+
+              text-base
+              font-semibold
+              text-sm
+
+              px-6
+              py-3.5
+
+              rounded-xl
+
+              transition-all
+              duration-300
+
+              hover:shadow-[0_0_35px_rgba(45,212,191,0.25)]
+
+              disabled:opacity-60
+              disabled:cursor-not-allowed
+            "
+          >
+            {/* BUTTON SHINE */}
+
+            <span
+              className="
+                absolute
+                inset-y-0
+                -left-[50%]
+
+                w-[35%]
+
+                skew-x-[-20deg]
+
+                bg-white/20
+
+                transition-all
+                duration-700
+
+                group-hover/button:left-[130%]
+              "
+            />
+
+            {status === "sending" ? (
+              <>
                 <Loader2
                   size={16}
                   className="animate-spin"
                 />
-              )}
 
-              {status === "sending"
-                ? "Sending..."
-                : "Send message"}
-            </button>
+                Sending...
+              </>
+            ) : (
+              <>
+                Send message
 
-            {/* SUCCESS */}
-            {status === "sent" && (
-              <motion.p
-                initial={{
-                  opacity: 0,
-                  y: 5,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  text-sm
-                  text-teal
-                "
-              >
-                <CheckCircle2 size={16} />
+                <Send
+                  size={15}
+                  className="
+                    transition-transform
+                    duration-300
 
-                Message sent — I&apos;ll get back
-                to you soon.
-              </motion.p>
+                    group-hover/button:translate-x-1
+                    group-hover/button:-translate-y-1
+                  "
+                />
+              </>
             )}
+          </motion.button>
 
-            {/* ERROR */}
-            {status === "error" && (
-              <motion.p
-                initial={{
-                  opacity: 0,
-                  y: 5,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  text-sm
-                  text-red-400
-                "
-              >
-                <AlertCircle size={16} />
+          {/* SUCCESS */}
 
-                {errorMsg}
-              </motion.p>
-            )}
-          </motion.form>
-        </div>
-        {/* =========================================
-            FOOTER
-        ========================================== */}
-        <div
-          className="
-            mt-24
-            pt-8
-            border-border
-            flex
-            items-center
-            justify-center
-            text-center
-            text-xs
-            text-muted
-            font-mono
-          "
-        >
-          <span>
-            Developed by{" "}
-            <span className="text-teal">
-              {profile.name}
-            </span>
-            ....
-          </span>
-        </div>
+          {status === "sent" && (
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: 6,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              className="
+                relative
+                z-10
+
+                flex
+                items-center
+                gap-2
+
+                mt-4
+
+                text-sm
+                text-teal
+              "
+            >
+              <CheckCircle2 size={16} />
+
+              Message sent — I&apos;ll get back to you soon.
+            </motion.p>
+          )}
+
+          {/* ERROR */}
+
+          {status === "error" && (
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: 6,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              className="
+                relative
+                z-10
+
+                flex
+                items-center
+                gap-2
+
+                mt-4
+
+                text-sm
+                text-red-400
+              "
+            >
+              <AlertCircle size={16} />
+
+              {errorMsg}
+            </motion.p>
+          )}
+        </motion.form>
       </div>
-    </section>
-  );
-}
+
+      {/* ========================================= */}
+      {/* FOOTER */}
+      {/* ========================================= */}
+
+      <div
+        className="
+          mt-20
+          md:mt-28
+          pt-7
+
+          border-t
+          border-white/[0.05]
+
+          flex
+          items-center
+          justify-between
+
+          font-mono
+          text-[9px]
+          sm:text-[10px]
+
+          uppercase
+          tracking-[0.16em]
+
+          text-muted/50
+        "
+      >
+        <span>
+          © {new Date().getFullYear()} {profile.name}
+        </span>
+
+        <span className="hidden sm:block">
+          Designed &amp; developed with precision
+        </span>
+      </div>
+    </div>
+  </section>
+);}

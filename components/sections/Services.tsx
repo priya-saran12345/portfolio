@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { services } from "@/lib/data";
 import SkillHeading3D from "../three/SkillHeading3D";
-
+import ServicesCubeBackground from "../three/ServicesCubeBackground";
 const accents = [
   {
     cube: "bg-cyan-400",
@@ -68,35 +68,38 @@ export default function Services() {
       className="
         relative
         overflow-hidden
-        bg-surface
-        border-t
         border-border
-        py-14
-        md:py-24
+        py-10
+        md:py-16
       "
     >
+      
       {/* ================================================= */}
       {/* BACKGROUND GRID */}
       {/* ================================================= */}
 
-      <div
-        className="absolute inset-0 pointer-events-none opacity-40"
-        style={{
-          backgroundImage: `
-            linear-gradient(
-              rgba(255,255,255,0.025) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              90deg,
-              rgba(255,255,255,0.025) 1px,
-              transparent 1px
-            )
-          `,
-          backgroundSize: "45px 45px",
-        }}
-      />
+{/* ================================================= */}
+{/* BACKGROUND GRID */}
+{/* ================================================= */}
 
+<div
+  className="absolute inset-0 pointer-events-none"
+  style={{
+    backgroundImage: `
+      linear-gradient(
+        to right,
+        rgba(104, 95, 95, 0.08) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(248, 244, 244, 0.08) 1px,
+        transparent 1px
+      )
+    `,
+    backgroundSize: "40px 40px",
+  }}
+/>
       {/* LARGE SOFT GLOW */}
 
       <motion.div
@@ -273,7 +276,7 @@ export default function Services() {
                   border
                   border-white/[0.07]
 
-                  bg-black/[0.10]
+                  bg-surface
 
                   p-7
                   md:p-8
