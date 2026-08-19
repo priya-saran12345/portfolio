@@ -147,15 +147,7 @@ export default function Hero() {
         repeatDelay: 2.4,
         ease: "power2.inOut",
       });
-
-      gsap.to(".hero-title-sheen", {
-        xPercent: 235,
-        duration: 2.2,
-        repeat: -1,
-        repeatDelay: 4.2,
-        ease: "power2.inOut",
-      });
-    }, hero);
+}, hero);
 
     const contentX = gsap.quickTo(content, "x", {
       duration: 0.8,
@@ -319,14 +311,41 @@ export default function Hero() {
           onPointerMove={handleTitlePointerMove}
           className="hero-title-stage pointer-events-auto relative w-fit [perspective:900px]"
         >
-          <div className="overflow-hidden pb-2">
+          <div className="overflow-visible pb-2">
             <div className="hero-title-mask relative">
-              <h1 className="hero-title relative select-none font-display text-[13vw]
-               font-semibold leading-[0.96] text-ink sm:text-6xl 
-               md:text-7xl lg:text-[5.6rem] xl:text-[6.25rem]">
+              <h1
+                className="
+                  hero-title
+                  relative
+                  z-[2]
+                  select-none
+                  font-display
+                  text-[13vw]
+                  font-semibold
+                  leading-[0.96]
+                  text-ink
+                  sm:text-6xl
+                  md:text-7xl
+                  lg:text-[5.6rem]
+                  xl:text-[6.25rem]
+                "
+              >
                 {profile.name}
               </h1>
-              <span className="hero-title-sheen pointer-events-none absolute inset-y-0 -left-[42%] w-[32%] skew-x-[-16deg]" />
+
+              {/* very subtle hover sheen */}
+              <span
+                aria-hidden="true"
+                className="
+                  hero-title-hover-sheen
+                  pointer-events-none
+                  absolute
+                  inset-y-0
+                  left-0
+                  z-[3]
+                  w-full
+                "
+              />
             </div>
           </div>
           <div className="hero-title-rule mt-2 h-px w-full origin-left" />
@@ -512,11 +531,42 @@ export default function Hero() {
         }
 
         .hero-title {
+          margin: 0;
+          white-space: nowrap;
           letter-spacing: -0.055em;
+          transform-origin: 50% 60%;
           text-shadow: 0 18px 55px rgba(0, 0, 0, 0.26);
+          will-change: transform, letter-spacing, text-shadow, filter;
+
           transition:
-            letter-spacing 500ms cubic-bezier(0.22, 1, 0.36, 1),
-            text-shadow 500ms ease;
+            transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+            letter-spacing 560ms cubic-bezier(0.22, 1, 0.36, 1),
+            text-shadow 560ms ease,
+            filter 560ms ease;
+        }
+
+        .hero-title-hover-sheen {
+          opacity: 0;
+          transform: translateX(-115%);
+          background: linear-gradient(
+            105deg,
+            transparent 0%,
+            transparent 35%,
+            rgba(255, 255, 255, 0.02) 43%,
+            rgba(255, 255, 255, 0.14) 50%,
+            rgba(255, 255, 255, 0.025) 57%,
+            transparent 65%,
+            transparent 100%
+          );
+
+          -webkit-mask-image: linear-gradient(#000, #000);
+          mask-image: linear-gradient(#000, #000);
+
+          mix-blend-mode: screen;
+
+          transition:
+            opacity 260ms ease,
+            transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .hero-title-mask::after {
@@ -539,20 +589,17 @@ export default function Hero() {
         }
 
         .hero-title-stage:hover .hero-title {
-          letter-spacing: -0.045em;
-          text-shadow: 0 18px 58px rgba(255, 255, 255, 0.045);
+          transform: translateY(-1px) scaleX(1.012);
+          letter-spacing: -0.048em;
+          text-shadow:
+            0 20px 58px rgba(0, 0, 0, 0.28),
+            0 0 20px rgba(255, 255, 255, 0.035);
+          filter: brightness(1.035);
         }
 
-        .hero-title-sheen {
-          opacity: 0.4;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.16),
-            transparent
-          );
-          filter: blur(5px);
-          mix-blend-mode: screen;
+        .hero-title-stage:hover .hero-title-hover-sheen {
+          opacity: 0.85;
+          transform: translateX(115%);
         }
 
         .hero-title-rule {
@@ -562,6 +609,16 @@ export default function Hero() {
             rgba(255, 255, 255, 0.09) 58%,
             transparent
           );
+
+          opacity: 0.72;
+          transition:
+            opacity 420ms ease,
+            transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .hero-title-stage:hover .hero-title-rule {
+          opacity: 1;
+          transform: scaleX(1.035);
         }
 
         .hero-role-separator {
@@ -630,6 +687,18 @@ export default function Hero() {
           border-color: rgba(255, 255, 255, 0.16);
         }
 
+        @media (hover: none), (pointer: coarse) {
+          .hero-title-stage:hover .hero-title {
+            transform: none;
+            letter-spacing: -0.055em;
+            filter: none;
+          }
+
+          .hero-title-hover-sheen {
+            display: none;
+          }
+        }
+
         @media (max-width: 767px) {
           .hero-grid {
             opacity: 0.42;
@@ -659,6 +728,7 @@ export default function Hero() {
 
         @media (prefers-reduced-motion: reduce) {
           .hero-title,
+          .hero-title-hover-sheen,
           .hero-role-separator,
           .hero-summary::before,
           .hero-primary,
@@ -669,8 +739,7 @@ export default function Hero() {
           .hero-cursor-dot,
           .hero-scan,
           .hero-orbit,
-          .hero-orbit-dot,
-          .hero-title-sheen {
+          .hero-orbit-dot {
             display: none;
           }
         }
@@ -678,16 +747,4 @@ export default function Hero() {
     </section>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
 

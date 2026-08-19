@@ -20,55 +20,93 @@ export default function Home() {
         bg-base
       "
     >
-      {/* =====================================================
-          GLOBAL SCROLL CHARACTER
-          Visible throughout the website
-          Behind actual content
-      ====================================================== */}
-      <div
-        className="
-          pointer-events-none
-          fixed
-          inset-0
-          z-[10]
-          overflow-hidden
-
-          opacity-[0.22]
-          md:opacity-[0.28]
-        "
-        aria-hidden="true"
-      >
-        <ScrollCharacter />
-      </div>
-
-      {/* =====================================================
+      {/* =========================================
           INTRO LOADER
-      ====================================================== */}
+      ========================================== */}
+
       <div className="relative z-[100]">
         <IntroLoader />
       </div>
 
-      {/* =====================================================
+      {/* =========================================
           NAVBAR
-      ====================================================== */}
+      ========================================== */}
+
       <div className="relative z-[50]">
         <Navbar />
       </div>
 
+      {/* =========================================
+          HERO
+
+          NO ROBOT HERE
+      ========================================== */}
+
+      <Hero />
+
       {/* =====================================================
-          PAGE CONTENT
+          ROBOT AREA
+
+          Robot exists ONLY while scrolling through:
+
+          Skills
+          Services
+          Experience
       ====================================================== */}
-      <div className="relative z-[20]">
-        <Hero />
 
-        <Skills />
+      <div className="relative">
 
-        <Services />
+        {/* =====================================
+            STICKY ROBOT BACKGROUND
+        ====================================== */}
 
-        <Experience />
+        <div
+          className="
+            pointer-events-none
+            sticky
+            top-0
 
-        <Contact />
+            z-[10]
+
+            h-screen
+            w-full
+
+            -mb-[100vh]
+
+            overflow-hidden
+
+            opacity-[0.18]
+            md:opacity-[0.24]
+          "
+          aria-hidden="true"
+        >
+          <ScrollCharacter />
+        </div>
+
+        {/* =====================================
+            SKILLS / SERVICES / EXPERIENCE
+
+            ABOVE ROBOT
+        ====================================== */}
+
+        <div className="relative z-[20]">
+
+          <Skills />
+
+          <Services />
+
+          <Experience />
+
+        </div>
       </div>
+
+      {/* =========================================
+          CONTACT
+
+          ROBOT ENDS BEFORE THIS SECTION
+      ========================================== */}
+
+      <Contact />
     </main>
   );
 }
