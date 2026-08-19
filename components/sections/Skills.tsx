@@ -89,7 +89,7 @@ export default function Skills() {
               md:text-xs
               tracking-[0.35em]
               uppercase
-              text-muted
+              section-label
               mb-2
             "
           >

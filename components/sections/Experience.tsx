@@ -402,15 +402,33 @@ export default function Experience() {
                         "
                       >
                         {ed.notes.map((note) => (
-                          <li
-                            key={note}
-                            className="
-                              text-xs
-                              text-ink/60
-                            "
-                          >
-                            • {note}
-                          </li>
+                         <li
+  key={note}
+  className="
+    flex
+    items-start
+    gap-2
+    text-xs
+    text-ink/60
+    leading-5
+  "
+>
+  <span
+    className="
+      mt-[7px]
+      h-1
+      w-1
+      shrink-0
+      rounded-full
+      bg-current
+      opacity-70
+    "
+  />
+
+  <span className="flex-1">
+    {note}
+  </span>
+</li>
                         ))}
                       </ul>
                     )}

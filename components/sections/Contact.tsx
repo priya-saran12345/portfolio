@@ -398,8 +398,8 @@ return (
 
           {/* SECTION LABEL */}
 
-          <p className="section-label mb-4">
-            05 — Get in touch
+          <p className=" mb-4">
+            04 — Get in touch
           </p>
 
           {/* HEADING */}

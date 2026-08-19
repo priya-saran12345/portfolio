@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { services } from "@/lib/data";
 import SkillHeading3D from "../three/SkillHeading3D";
-import ServicesCubeBackground from "../three/ServicesCubeBackground";
+import ScrollCharacter from "../three/ScrollCharacter";
 const accents = [
   {
     cube: "bg-cyan-400",
@@ -73,6 +73,33 @@ export default function Services() {
         md:py-16
       "
     >
+
+      {/* ================================================= */}
+      {/* MONOCHROME CHARACTER BACKGROUND */}
+      {/* ================================================= */}
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          z-[2]
+          overflow-hidden
+
+          hidden
+          md:block
+
+          opacity-[0.14]
+          lg:opacity-[0.18]
+
+          [mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)]
+          [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)]
+        "
+        aria-hidden="true"
+      >
+        <ScrollCharacter />
+      </div>
+
       
       {/* ================================================= */}
       {/* BACKGROUND GRID */}
@@ -83,7 +110,7 @@ export default function Services() {
 {/* ================================================= */}
 
 <div
-  className="absolute inset-0 pointer-events-none"
+  className="absolute inset-0 z-0 pointer-events-none"
   style={{
     backgroundImage: `
       linear-gradient(
@@ -117,6 +144,7 @@ export default function Services() {
           blur-[130px]
 
           pointer-events-none
+          z-[1]
         "
         animate={{
           scale: [1, 1.12, 1],

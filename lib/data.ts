@@ -170,7 +170,7 @@ export const education = [
   },
   {
     degree: "B.Tech, Computer Science",
-    school: "Jayoti Vidyapeeth Women's University, Jaipur (86%)",
+    school: "Jayoti Vidyapeeth Women's University, Jaipur",
     period: "2020 — 2024",
     notes: [
       "GATE Qualified (2024)",
@@ -182,14 +182,6 @@ export const education = [
 ];
 
 export const certifications = [
-  {
-    name: "MERN Stack Development (Groot Software)",
-    certificate: "/certificates/mern-stack-development.jpg",
-  },
-  {
-    name: "Full Stack Dev Internship (Bharat Intern)",
-    certificate: "/certificates/public/certificates/bharat-intern-webdevelopment.jpg",
-  },
   {
     name: "Java Internship (Internpe)",
     certificate: "/certificates/java-internpay.png",
@@ -211,10 +203,18 @@ export const certifications = [
     certificate: "/certificates/cloud-ibm.jpg",
   },
   // {
-  //   name: "Leadership Certification (IIMA)",
-  //   certificate: "/certificates/leadership-iima.jpg",
-  // },
-];
+    //   name: "Leadership Certification (IIMA)",
+    //   certificate: "/certificates/leadership-iima.jpg",
+    // },
+    {
+      name: "MERN Stack Development (Groot Software)",
+      certificate: "/certificates/mern-stack-development.jpg",
+    },
+    {
+      name: "Full Stack Dev Internship (Bharat Intern)",
+      certificate: "/certificates/public/certificates/bharat-intern-webdevelopment.jpg",
+    },
+  ];
 
 export const navLinks = [
   { label: "Skills", href: "#skills" },

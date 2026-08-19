@@ -16,6 +16,7 @@ export default function Hero() {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const networkRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLDivElement | null>(null);
+  const titleDockRef = useRef<HTMLDivElement | null>(null);
   const glowRef = useRef<HTMLDivElement | null>(null);
   const cursorRef = useRef<HTMLDivElement | null>(null);
 
@@ -241,6 +242,234 @@ export default function Hero() {
     };
   }, []);
 
+
+  /*
+   * Scroll-to-navbar name transition.
+   *
+   * The big Hero name stays exactly where it is at the top of the page.
+   * As the page scrolls, it naturally moves upward while this wrapper
+   * gradually scales it down toward the empty navbar brand slot.
+   *
+   * Once it reaches that slot, the Hero copy fades out and Navbar reveals
+   * its compact copy. Scrolling back up reverses the transition.
+   */
+  useLayoutEffect(() => {
+    const source = titleDockRef.current;
+
+    if (!source) return;
+
+    let frame = 0;
+    let sourcePageTop = 0;
+    let sourceLeft = 0;
+    let targetTop = 0;
+    let targetLeft = 0;
+    let dockScrollY = 1;
+    let dockScale = 0.2;
+    let lastDocked: boolean | null = null;
+
+    const clamp01 = (value: number) =>
+      Math.min(1, Math.max(0, value));
+
+    const smoothStep = (value: number) =>
+      value * value * (3 - 2 * value);
+
+    const emitDockState = (docked: boolean) => {
+      document.documentElement.dataset.heroNameDocked =
+        docked ? "true" : "false";
+
+      if (docked === lastDocked) return;
+
+      lastDocked = docked;
+
+      window.dispatchEvent(
+        new CustomEvent("hero-name-dock-change", {
+          detail: { docked },
+        })
+      );
+    };
+
+    const measure = () => {
+      const target =
+        document.getElementById("navbar-name-dock");
+
+      if (!target) return;
+
+      /*
+       * Temporarily clear our own scroll transform so measurements
+       * remain stable after resize.
+       */
+      const previousTransform = source.style.transform;
+      const previousOpacity = source.style.opacity;
+
+      source.style.transform = "none";
+      source.style.opacity = "1";
+
+      const sourceRect =
+        source.getBoundingClientRect();
+
+      const targetRect =
+        target.getBoundingClientRect();
+
+      sourcePageTop =
+        sourceRect.top + window.scrollY;
+
+      sourceLeft = sourceRect.left;
+      targetTop = targetRect.top;
+      targetLeft = targetRect.left;
+
+      /*
+       * The page scroll itself supplies the Y movement. At dockScrollY
+       * the natural top of the Hero name reaches the navbar target.
+       */
+      dockScrollY = Math.max(
+        1,
+        sourcePageTop - targetTop
+      );
+
+      const widthScale =
+        targetRect.width /
+        Math.max(sourceRect.width, 1);
+
+      const heightScale =
+        targetRect.height /
+        Math.max(sourceRect.height, 1);
+
+      dockScale = Math.min(
+        0.34,
+        Math.max(
+          0.13,
+          Math.min(widthScale, heightScale)
+        )
+      );
+
+      source.style.transform =
+        previousTransform;
+
+      source.style.opacity =
+        previousOpacity;
+    };
+
+    const update = () => {
+      frame = 0;
+
+      const startScroll = Math.min(
+        90,
+        dockScrollY * 0.2
+      );
+
+      const rawProgress = clamp01(
+        (window.scrollY - startScroll) /
+          Math.max(
+            dockScrollY - startScroll,
+            1
+          )
+      );
+
+      const progress =
+        smoothStep(rawProgress);
+
+      const x =
+        (targetLeft - sourceLeft) *
+        progress;
+
+      const scale =
+        1 +
+        (dockScale - 1) *
+          progress;
+
+      /*
+       * Keep the Hero name clear through most of the trip.
+       * Fade only at the handoff so it feels like the same object
+       * settling into the navbar.
+       */
+      const fadeProgress = clamp01(
+        (rawProgress - 0.88) / 0.12
+      );
+
+      source.style.transform = `
+        translate3d(${x}px, 0, 0)
+        scale(${scale})
+      `;
+
+      source.style.opacity =
+        String(1 - fadeProgress);
+
+      source.style.transformOrigin =
+        "left top";
+
+      source.style.willChange =
+        "transform, opacity";
+
+      emitDockState(
+        rawProgress >= 0.965
+      );
+    };
+
+    const requestUpdate = () => {
+      if (frame) return;
+
+      frame =
+        window.requestAnimationFrame(
+          update
+        );
+    };
+
+    const handleResize = () => {
+      measure();
+      requestUpdate();
+    };
+
+    /*
+     * Wait one frame so the fixed Navbar has completed layout and
+     * the target text has a reliable bounding box.
+     */
+    const initialFrame =
+      window.requestAnimationFrame(() => {
+        measure();
+        update();
+      });
+
+    window.addEventListener(
+      "scroll",
+      requestUpdate,
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "resize",
+      handleResize
+    );
+
+    return () => {
+      window.cancelAnimationFrame(
+        initialFrame
+      );
+
+      if (frame) {
+        window.cancelAnimationFrame(
+          frame
+        );
+      }
+
+      window.removeEventListener(
+        "scroll",
+        requestUpdate
+      );
+
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+
+      source.style.transform = "";
+      source.style.opacity = "";
+      source.style.willChange = "";
+
+      document.documentElement.dataset.heroNameDocked =
+        "false";
+    };
+  }, []);
+
   const handleTitlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
     const element = event.currentTarget;
     const rect = element.getBoundingClientRect();
@@ -307,13 +536,18 @@ export default function Hero() {
         </div>
 
         <div
-          ref={titleRef}
-          onPointerMove={handleTitlePointerMove}
-          className="hero-title-stage pointer-events-auto relative w-fit [perspective:900px]"
+          ref={titleDockRef}
+          className="hero-title-dock-wrap w-fit"
         >
+          <div
+            ref={titleRef}
+            onPointerMove={handleTitlePointerMove}
+            className="hero-title-stage pointer-events-auto relative w-fit [perspective:900px]"
+          >
           <div className="overflow-visible pb-2">
             <div className="hero-title-mask relative">
               <h1
+                id="hero-profile-name"
                 className="
                   hero-title
                   relative
@@ -348,7 +582,8 @@ export default function Hero() {
               />
             </div>
           </div>
-          <div className="hero-title-rule mt-2 h-px w-full origin-left" />
+            <div className="hero-title-rule mt-2 h-px w-full origin-left" />
+          </div>
         </div>
 
         <div className="hero-role pointer-events-auto mt-6 flex w-fit max-w-2xl flex-wrap items-center gap-x-3 gap-y-2 font-mono text-sm text-muted md:text-white">
