@@ -14,6 +14,9 @@ import {
 
 import { profile } from "@/lib/data";
 import SpotlightBackground from "@/components/three/SpotlightBackground";
+
+const WEB3FORMS_ACCESS_KEY =
+  process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "";
 // import FooterIconPage from "../common/footericon";
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -26,59 +29,100 @@ export default function Contact() {
     e: FormEvent<HTMLFormElement>
   ) {
     e.preventDefault();
-
     setStatus("sending");
     setErrorMsg("");
 
     const form = e.currentTarget;
 
-    const data = {
-      name: (
-        form.elements.namedItem(
-          "name"
-        ) as HTMLInputElement
-      ).value,
+    if (!WEB3FORMS_ACCESS_KEY) {
+      setStatus("error");
+      setErrorMsg(
+        "Contact form is not configured. Add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY to .env.local."
+      );
+      return;
+    }
 
-      email: (
-        form.elements.namedItem(
-          "email"
-        ) as HTMLInputElement
-      ).value,
+    const name = (
+      form.elements.namedItem(
+        "name"
+      ) as HTMLInputElement
+    ).value.trim();
 
-      message: (
-        form.elements.namedItem(
-          "message"
-        ) as HTMLTextAreaElement
-      ).value,
+    const email = (
+      form.elements.namedItem(
+        "email"
+      ) as HTMLInputElement
+    ).value.trim();
+
+    const message = (
+      form.elements.namedItem(
+        "message"
+      ) as HTMLTextAreaElement
+    ).value.trim();
+
+    const botcheck = (
+      form.elements.namedItem(
+        "botcheck"
+      ) as HTMLInputElement | null
+    )?.checked ?? false;
+
+    if (!name || !email || !message) {
+      setStatus("error");
+      setErrorMsg("Please fill in all required fields.");
+      return;
+    }
+
+    const payload = {
+      access_key: WEB3FORMS_ACCESS_KEY,
+
+      name,
+      email,
+      message,
+
+      subject: `Portfolio Contact - ${name}`,
+      from_name: "Priya Saran Portfolio",
+
+      /*
+       * Web3Forms automatically uses the submitted
+       * "email" field as Reply-To.
+       */
+      botcheck,
     };
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
+      const res = await fetch(
+        "https://api.web3forms.com/submit",
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
 
-        body: JSON.stringify(data),
-      });
+          body: JSON.stringify(payload),
+        }
+      );
 
-      if (!res.ok) {
-        const body = await res
-          .json()
-          .catch(() => ({}));
+      const result = await res
+        .json()
+        .catch(() => null);
 
+      if (
+        !res.ok ||
+        !result ||
+        result.success !== true
+      ) {
         throw new Error(
-          body.error ||
-            "Something went wrong. Please try again."
+          result?.message ||
+            result?.body?.message ||
+            "Unable to send your message. Please try again."
         );
       }
 
       setStatus("sent");
-
       form.reset();
 
-      // Optional: remove success message after some time
       window.setTimeout(() => {
         setStatus("idle");
       }, 5000);
@@ -728,6 +772,17 @@ return (
             shadow-[0_30px_100px_rgba(0,0,0,0.35)]
           "
         >
+          {/* Web3Forms spam honeypot */}
+          <input
+            type="checkbox"
+            name="botcheck"
+            tabIndex={-1}
+            autoComplete="off"
+            className="hidden"
+            style={{ display: "none" }}
+            aria-hidden="true"
+          />
+
           {/* FORM GRID */}
 
           <div
