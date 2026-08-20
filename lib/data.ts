@@ -212,7 +212,7 @@ export const certifications = [
     },
     {
       name: "Full Stack Dev Internship (Bharat Intern)",
-      certificate: "/certificates/public/certificates/bharat-intern-webdevelopment.jpg",
+      certificate: "/certificates/bharat-intern-webdevelopment.jpg",
     },
   ];
 
