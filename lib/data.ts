@@ -208,7 +208,7 @@ export const certifications = [
     // },
     {
       name: "MERN Stack Development (Groot Software)",
-      certificate: "/certificates/mern-stack-development.jpg",
+      certificate: "/certificates/GrootSoftware.jpeg",
     },
     {
       name: "Full Stack Dev Internship (Bharat Intern)",
