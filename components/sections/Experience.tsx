@@ -9,6 +9,118 @@ import {
 import CertificateList from "@/components/sections/CertificateList";
 import EarthGlobe from "@/components/three/EarthGlobe";
 
+
+function CardEffects() {
+  return (
+    <>
+      {/* Subtle grid */}
+      <div
+        className="
+          absolute
+          inset-0
+          pointer-events-none
+          opacity-40
+        "
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              rgba(255,255,255,0.025) 1px,
+              transparent 1px
+            ),
+            linear-gradient(
+              90deg,
+              rgba(255,255,255,0.025) 1px,
+              transparent 1px
+            )
+          `,
+          backgroundSize: "32px 32px",
+        }}
+      />
+
+      {/* Moving glow */}
+      <motion.div
+        className="
+          absolute
+          -top-20
+          -right-20
+          h-48
+          w-48
+          rounded-full
+          bg-teal/10
+          blur-[70px]
+          pointer-events-none
+        "
+        animate={{
+          x: [-16, 16, -16],
+          y: [-8, 16, -8],
+        }}
+        transition={{
+          duration: 7,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      {/* Top scan line */}
+      <motion.div
+        className="
+          absolute
+          top-0
+          left-0
+          z-20
+          h-px
+          w-[45%]
+          bg-gradient-to-r
+          from-transparent
+          via-teal
+          to-transparent
+          pointer-events-none
+        "
+        animate={{
+          x: ["-100%", "320%"],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "linear",
+          repeatDelay: 1,
+        }}
+      />
+
+      {/* Corner accents */}
+      <div
+        className="
+          absolute
+          left-3
+          top-3
+          z-20
+          w-4
+          h-4
+          border-l
+          border-t
+          border-teal/50
+          pointer-events-none
+        "
+      />
+
+      <div
+        className="
+          absolute
+          right-3
+          bottom-3
+          z-20
+          w-4
+          h-4
+          border-r
+          border-b
+          border-teal/50
+          pointer-events-none
+        "
+      />
+    </>
+  );
+}
+
 export default function Experience() {
   return (
     <section
@@ -331,6 +443,8 @@ export default function Experience() {
                 duration: 0.5,
               }}
               className="
+                relative
+                overflow-hidden
                 rounded-2xl
                 border
                 border-border
@@ -339,6 +453,9 @@ export default function Experience() {
                 p-5
               "
             >
+              <CardEffects />
+
+              <div className="relative z-10">
               <h3
                 className="
                   font-mono
@@ -424,7 +541,6 @@ export default function Experience() {
       opacity-70
     "
   />
-
   <span className="flex-1">
     {note}
   </span>
@@ -435,8 +551,8 @@ export default function Experience() {
                   </div>
                 ))}
               </div>
+              </div>
             </motion.div>
-
             {/* ===============================
                 CERTIFICATIONS
             ================================ */}
@@ -457,10 +573,20 @@ export default function Experience() {
     duration: 0.5,
     delay: 0.1,
   }}
+  className="
+    relative
+    overflow-hidden
+    rounded-2xl
+    pointer-events-auto
+  "
 >
-  <CertificateList
-    certifications={certifications}
-  />
+  <CardEffects />
+
+  <div className="relative z-10">
+    <CertificateList
+      certifications={certifications}
+    />
+  </div>
 </motion.div>
           </div>
         </div>

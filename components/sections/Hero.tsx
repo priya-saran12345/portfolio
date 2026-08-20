@@ -480,6 +480,9 @@ export default function Hero() {
     element.style.setProperty("--title-y", `${y}%`);
   };
 
+  const [firstName, ...restName] = profile.name.trim().split(/\s+/);
+  const lastName = restName.join(" ");
+
   return (
     <section
       ref={heroRef}
@@ -557,14 +560,31 @@ export default function Hero() {
                   text-[13vw]
                   font-semibold
                   leading-[0.96]
-                  text-ink
                   sm:text-6xl
                   md:text-7xl
                   lg:text-[5.6rem]
                   xl:text-[6.25rem]
                 "
               >
-                {profile.name}
+                <span className="text-ink">
+                  {firstName}
+                </span>
+
+                {lastName && (
+                  <>
+                    {" "}
+                    <span
+                      className="
+                        hero-surname
+                        inline-block
+                        bg-clip-text
+                        text-transparent
+                      "
+                    >
+                      {lastName}
+                    </span>
+                  </>
+                )}
               </h1>
 
               {/* very subtle hover sheen */}
@@ -778,6 +798,25 @@ export default function Hero() {
             letter-spacing 560ms cubic-bezier(0.22, 1, 0.36, 1),
             text-shadow 560ms ease,
             filter 560ms ease;
+        }
+
+        .hero-surname {
+          /*
+           * Keep the beginning of the surname almost white and let it
+           * gently drift into a cool steel-blue tint toward the end.
+           * The opacity difference is intentionally small so the title
+           * still reads as one premium, restrained wordmark.
+           */
+          background-image: linear-gradient(
+            90deg,
+            rgba(232, 234, 237, 0.98) 0%,
+            rgba(226, 231, 237, 0.94) 28%,
+            rgba(207, 218, 230, 0.88) 58%,
+            rgba(176, 196, 216, 0.78) 82%,
+            rgba(148, 176, 201, 0.68) 100%
+          );
+          -webkit-background-clip: text;
+          background-clip: text;
         }
 
         .hero-title-hover-sheen {

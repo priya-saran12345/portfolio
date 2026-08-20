@@ -398,7 +398,7 @@ return (
 
           {/* SECTION LABEL */}
 
-          <p className=" mb-4">
+          <p className="section-label mb-4">
             04 — Get in touch
           </p>
 
